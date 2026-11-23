@@ -1,7 +1,12 @@
 {
   "language": { "label": "Idioma" },
   "navigation": { "menu": "Menu", "backToMainMenu": "Voltar para a tela inicial" },
+  "world": {
+    "loading": "Carregando mundos…",
+    "loadError": "Não foi possível carregar os mundos."
+  },
   "stage": {
+    "heading": "Fase",
     "list": "Fases",
     "title": "Fase {{number}}",
     "menu": "Menu da fase",

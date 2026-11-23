@@ -4,13 +4,23 @@
   "description": "Initial stage state. Tile codes: 0 = floor off, 1 = floor on, 2 = wall.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "id", "map", "playerStart"],
+  "required": ["schemaVersion", "id", "worldId", "number", "map", "playerStart"],
   "properties": {
     "schemaVersion": {
       "type": "integer",
-      "const": 1
+      "const": 2
     },
     "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "worldId": {
+      "description": "UUID of the world this stage belongs to.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "number": {
+      "description": "Display number within the world. The pair (worldId, number) is unique.",
       "type": "integer",
       "minimum": 1
     },

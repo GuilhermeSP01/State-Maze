@@ -23,7 +23,7 @@ npm run preview
 ## Structure
 
 - `apps/game`: React app with Vite and Capacitor configuration.
-- `packages/stages`: shared contract, TypeScript types, and initial stage maps.
+- `packages/stages`: shared world and stage contracts, TypeScript types, and initial maps.
 - `tools`: future development tools.
 - `docs`: project documentation.
 
@@ -32,10 +32,12 @@ npm run preview
 The `@state-maze/stages` package defines the format shared by the game, the future stage editor, and the stage analyzer:
 
 - `packages/stages/stage.schema.json`: JSON Schema contract, draft 2020-12.
-- `packages/stages/src/types.ts`: `Tile`, `Position`, and `StageDefinition` types.
-- `packages/stages/maps/<id>.json`: initial state of each stage.
+- `packages/stages/world.schema.json`: world contract with UUID identity and localized titles.
+- `packages/stages/src/types.ts`: `Tile`, `Position`, `LocalizedTitle`, `WorldDefinition`, and `StageDefinition` types.
+- `packages/stages/worlds/<world-uuid>.json`: world identity and titles.
+- `packages/stages/maps/<stage-uuid>.json`: initial state of each stage.
 
-Each stage contains `schemaVersion`, `id`, `map`, and `playerStart`. The map uses `0` for a floor tile in state 0, `1` for a floor tile in state 1, and `2` for a wall. Coordinates are zero-based: `row` identifies the row and `column` identifies the column, accessed as `map[row][column]`. New codes will be defined when special tiles are introduced.
+Each stage contains `schemaVersion`, `id` (UUID), `worldId` (UUID), `number`, `map`, and `playerStart`. Stage schema version 2 replaces the numeric ID from version 1. A stage number is a positive integer local to its world; `(worldId, number)` is unique. IDs remain stable when titles, numbers, or world membership change. The map uses `0` for a floor tile in state 0, `1` for a floor tile in state 1, and `2` for a wall. Coordinates are zero-based: `row` identifies the row and `column` identifies the column, accessed as `map[row][column]`. New codes will be defined when special tiles are introduced.
 
 The initial definition is read-only in the TypeScript types. When gameplay is implemented, each map row must be copied to keep in-memory changes separate from the original map.
 
@@ -43,7 +45,11 @@ The starting tile does not toggle when the player leaves it. Each floor tile the
 
 The schema serves as a contract. The stage editor will be responsible for producing valid maps; there is no additional validation during loading or in CI. The game page loads and renders the initial state, without movement or tile toggling.
 
-Files in `maps/` use numeric names matching their `id` (for example, `1.json`). The menu automatically lists available maps. Data loading is centralized in `apps/game/src/stages/loadStage.ts`, allowing it to be replaced with an API later.
+World and map filenames match their UUIDs. A stage explicitly references its world through `worldId`; folders do not determine membership. World titles are keyed by language code, with a required English title as fallback. The editor or future persistence layer is responsible for world references and unique stage numbers; the game adds no validation layer.
+
+The main menu groups stages by their explicit `worldId` and sorts each group by `number`. World titles use the active language, then its base language, then English. Stage links use `#/stage/<stage-uuid>`; display numbers and world titles can change without changing those links.
+
+Stage loading lives in `apps/game/src/stages/loadStage.ts`; world loading and catalog queries live in `apps/game/src/worlds/`. Both loaders accept UUIDs. The local catalog reads the bundled JSON definitions to obtain world membership and stage numbers. These data entry points can later be replaced with API calls.
 
 ## Localization
 

@@ -1,39 +1,44 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
-import type { StageDefinition } from '@state-maze/stages';
+import type { StageDefinition, WorldDefinition } from '@state-maze/stages';
 import StageBoard from '../components/StageBoard';
 import { loadStage } from '../stages/loadStage';
+import { loadWorld } from '../worlds/loadWorld';
+import { getWorldTitle } from '../worlds/getWorldTitle';
 
 type StageLoadState =
   | { status: 'loading' }
-  | { status: 'ready'; stage: StageDefinition }
+  | { status: 'ready'; stage: StageDefinition; world: WorldDefinition }
   | { status: 'not-found' }
   | { status: 'error' };
 
 export default function StagePage() {
-  const { stageNumber } = useParams<'stageNumber'>();
-  const number = Number(stageNumber);
+  const { stageId } = useParams<'stageId'>();
+  if (!stageId) return <Navigate to="/" replace />;
 
-  if (!stageNumber || !/^[1-9]\d*$/.test(stageNumber) || !Number.isSafeInteger(number)) {
-    return <Navigate to="/" replace />;
-  }
-
-  return <StageContent key={number} stageNumber={number} />;
+  return <StageContent key={stageId} stageId={stageId} />;
 }
 
-function StageContent({ stageNumber }: { stageNumber: number }) {
+function StageContent({ stageId }: { stageId: string }) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [state, setState] = useState<StageLoadState>({ status: 'loading' });
 
   useEffect(() => {
     let active = true;
 
-    loadStage(stageNumber).then(
-      (stage) => {
-        if (active) setState(stage ? { status: 'ready', stage } : { status: 'not-found' });
+    async function loadContent() {
+      const stage = await loadStage(stageId);
+      if (!stage) return null;
+      const world = await loadWorld(stage.worldId);
+      return world ? { stage, world } : null;
+    }
+
+    loadContent().then(
+      (content) => {
+        if (active) setState(content ? { status: 'ready', ...content } : { status: 'not-found' });
       },
       () => {
         if (active) setState({ status: 'error' });
@@ -41,11 +46,18 @@ function StageContent({ stageNumber }: { stageNumber: number }) {
     );
 
     return () => { active = false; };
-  }, [stageNumber]);
+  }, [stageId]);
 
   return (
     <main>
-      <h1>{t('stage.title', { number: stageNumber })}</h1>
+      <h1>
+        {state.status === 'ready'
+          ? t('stage.title', { number: state.stage.number })
+          : t('stage.heading')}
+      </h1>
+      {state.status === 'ready' && (
+        <p>{getWorldTitle(state.world, i18n.resolvedLanguage ?? 'en')}</p>
+      )}
       <button
         type="button"
         aria-expanded={menuOpen}

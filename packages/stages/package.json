@@ -9,6 +9,8 @@
       "types": "./src/types.ts"
     },
     "./stage.schema.json": "./stage.schema.json",
-    "./maps/*.json": "./maps/*.json"
+    "./world.schema.json": "./world.schema.json",
+    "./maps/*.json": "./maps/*.json",
+    "./worlds/*.json": "./worlds/*.json"
   }
 }
