@@ -1,7 +1,12 @@
 {
   "language": { "label": "Language" },
   "navigation": { "menu": "Menu", "backToMainMenu": "Back to main menu" },
+  "world": {
+    "loading": "Loading worlds…",
+    "loadError": "Could not load the worlds."
+  },
   "stage": {
+    "heading": "Stage",
     "list": "Stages",
     "title": "Stage {{number}}",
     "menu": "Stage menu",

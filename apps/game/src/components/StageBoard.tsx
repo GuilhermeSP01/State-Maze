@@ -14,7 +14,7 @@ export default function StageBoard({ stage }: { stage: StageDefinition }) {
     <div
       className="stage-board"
       role="table"
-      aria-label={t('board.label', { number: stage.id })}
+      aria-label={t('board.label', { number: stage.number })}
       style={{ gridTemplateColumns: `repeat(${stage.map[0].length}, minmax(0, 1fr))` }}
     >
       {stage.map.map((row, rowIndex) => (

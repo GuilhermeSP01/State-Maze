@@ -6,7 +6,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<MainMenuPage />} />
-      <Route path="/stage/:stageNumber" element={<StagePage />} />
+      <Route path="/stage/:stageId" element={<StagePage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

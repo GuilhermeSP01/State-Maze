@@ -7,14 +7,17 @@ const files = import.meta.glob<StageDefinition>(
 
 const loaders = new Map(
   Object.entries(files).map(([path, load]) => [
-    Number(path.slice(path.lastIndexOf('/') + 1, -5)),
+    path.slice(path.lastIndexOf('/') + 1, -5),
     load,
   ]),
 );
 
-export const availableStageNumbers = [...loaders.keys()].sort((a, b) => a - b);
-
-export async function loadStage(stageNumber: number): Promise<StageDefinition | null> {
-  const load = loaders.get(stageNumber);
+export async function loadStage(stageId: string): Promise<StageDefinition | null> {
+  const load = loaders.get(stageId);
   return load ? load() : null;
+}
+
+export async function listStages() {
+  const stages = await Promise.all([...loaders.values()].map((load) => load()));
+  return stages.map(({ id, worldId, number }) => ({ id, worldId, number }));
 }

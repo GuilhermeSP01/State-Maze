@@ -47,6 +47,10 @@ The schema serves as a contract. The stage editor will be responsible for produc
 
 World and map filenames match their UUIDs. A stage explicitly references its world through `worldId`; folders do not determine membership. World titles are keyed by language code, with a required English title as fallback. The editor or future persistence layer is responsible for world references and unique stage numbers; the game adds no validation layer.
 
+The main menu groups stages by their explicit `worldId` and sorts each group by `number`. World titles use the active language, then its base language, then English. Stage links use `#/stage/<stage-uuid>`; display numbers and world titles can change without changing those links.
+
+Stage loading lives in `apps/game/src/stages/loadStage.ts`; world loading and catalog queries live in `apps/game/src/worlds/`. Both loaders accept UUIDs. The local catalog reads the bundled JSON definitions to obtain world membership and stage numbers. These data entry points can later be replaced with API calls.
+
 ## Localization
 
 The app uses `i18next` and `react-i18next` with bundled JSON translations in `apps/game/src/i18n/locales/`. English (`en`) is the source and fallback language; Brazilian Portuguese (`pt-BR`) is also available.
