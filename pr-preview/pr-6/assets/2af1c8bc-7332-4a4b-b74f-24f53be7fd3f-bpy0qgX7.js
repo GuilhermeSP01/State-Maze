@@ -1,1 +1,0 @@
-var e={schemaVersion:1,id:`2af1c8bc-7332-4a4b-b74f-24f53be7fd3f`,title:{en:`Tutorial`,"pt-BR":`Tutorial`}};export{e as default};
