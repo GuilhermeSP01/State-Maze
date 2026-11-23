@@ -1,6 +1,6 @@
 # State Maze
 
-Base para um jogo web e mobile com Vite, TypeScript e Capacitor.
+Base para um jogo web e mobile com Vite, React, TypeScript e Capacitor.
 
 ## Desenvolvimento
 
@@ -22,7 +22,7 @@ npm run preview
 
 ## Estrutura
 
-- `apps/game`: aplicação Vite e configuração do Capacitor.
+- `apps/game`: aplicação React com Vite e configuração do Capacitor.
 - `packages`: futuros módulos compartilhados.
 - `tools`: futuras ferramentas de desenvolvimento.
 - `docs`: documentação do projeto.
