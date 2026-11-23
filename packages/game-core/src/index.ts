@@ -23,12 +23,23 @@ export function createGameState(stage: StageDefinition): GameState {
   };
 }
 
+export type MovePlan = {
+  readonly state: GameState;
+  /** Entered cells in travel order; the starting cell is excluded. */
+  readonly path: readonly Position[];
+};
+
 export function movePlayer(state: GameState, direction: Direction): GameState {
-  if (state.completed) return state;
+  return planMove(state, direction).state;
+}
+
+export function planMove(state: GameState, direction: Direction): MovePlan {
+  if (state.completed) return { state, path: [] };
 
   const offset = offsets[direction];
   let { row, column } = state.player;
   let map: Tile[][] | undefined;
+  const path: Position[] = [];
 
   while (true) {
     const nextRow = row + offset.row;
@@ -40,13 +51,17 @@ export function movePlayer(state: GameState, direction: Direction): GameState {
     map[nextRow][nextColumn] = tile === 0 ? 1 : 0;
     row = nextRow;
     column = nextColumn;
+    path.push({ row, column });
   }
 
-  if (!map) return state;
+  if (!map) return { state, path };
 
   return {
-    map,
-    player: { row, column },
-    completed: map.every((tiles) => tiles.every((tile) => tile === 1 || tile === 2)),
+    path,
+    state: {
+      map,
+      player: { row, column },
+      completed: map.every((tiles) => tiles.every((tile) => tile === 1 || tile === 2)),
+    },
   };
 }

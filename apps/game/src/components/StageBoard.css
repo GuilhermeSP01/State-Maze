@@ -1,4 +1,6 @@
 .stage-board {
+  position: relative;
+  touch-action: none;
   display: grid;
   width: min(100%, 320px);
   margin-block: 16px;
@@ -10,6 +12,7 @@
 }
 
 .stage-tile {
+  box-sizing: border-box;
   display: grid;
   place-items: center;
   aspect-ratio: 1;
@@ -21,7 +24,9 @@
 .stage-tile[data-tile="2"] { background: #333; }
 
 .stage-player {
-  width: 40%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
   aspect-ratio: 1;
   border: 2px solid #fff;
   border-radius: 50%;

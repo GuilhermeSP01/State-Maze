@@ -1,3 +1,4 @@
+import type { Position } from '@state-maze/stages';
 import type { Direction, GameState } from '@state-maze/game-core';
 import { useTranslation } from 'react-i18next';
 import { usePlayerControls } from '../hooks/usePlayerControls';
@@ -12,11 +13,15 @@ const tileLabels = {
 type StageBoardProps = {
   stageNumber: number;
   game: GameState;
+  visualPosition: Position;
+  isAnimating: boolean;
   onMove: (direction: Direction) => void;
   disabled: boolean;
 };
 
-export default function StageBoard({ stageNumber, game, onMove, disabled }: StageBoardProps) {
+export default function StageBoard({
+  stageNumber, game, visualPosition, isAnimating, onMove, disabled,
+}: StageBoardProps) {
   const { t } = useTranslation();
   const inputHandlers = usePlayerControls(onMove, !disabled);
 
@@ -25,11 +30,11 @@ export default function StageBoard({ stageNumber, game, onMove, disabled }: Stag
       className="stage-board"
       role="table"
       tabIndex={0}
+      aria-busy={isAnimating}
       aria-label={t('board.label', { number: stageNumber })}
       aria-describedby="stage-controls"
       style={{
         gridTemplateColumns: `repeat(${game.map[0].length}, minmax(0, 1fr))`,
-        touchAction: disabled ? 'auto' : 'none',
       }}
       {...inputHandlers}
     >
@@ -45,13 +50,20 @@ export default function StageBoard({ stageNumber, game, onMove, disabled }: Stag
                 role="cell"
                 aria-label={t(tileLabels[tile], { context: hasPlayer ? 'player' : undefined })}
                 key={columnIndex}
-              >
-                {hasPlayer && <span className="stage-player" aria-hidden="true" />}
-              </div>
+              />
             );
           })}
         </div>
       ))}
+      <span
+        className="stage-player"
+        aria-hidden="true"
+        style={{
+          width: `${40 / game.map[0].length}%`,
+          left: `${((visualPosition.column + 0.5) / game.map[0].length) * 100}%`,
+          top: `${((visualPosition.row + 0.5) / game.map.length) * 100}%`,
+        }}
+      />
     </div>
   );
 }

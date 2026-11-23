@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Position, StageDefinition, Tile } from '@state-maze/stages';
-import { createGameState, movePlayer } from './index';
+import { createGameState, movePlayer, planMove } from './index';
 import type { Direction } from './index';
 
 function stage(map: Tile[][], playerStart: Position): StageDefinition {
@@ -107,5 +107,34 @@ describe('stage completion', () => {
     expect(restarted.completed).toBe(false);
     expect(restarted.map).toEqual([[1, 0, 0]]);
     expect(restarted.player).toEqual({ row: 0, column: 0 });
+  });
+});
+
+describe('movement paths', () => {
+  it.each<[Direction, Position[]]>([
+    ['up', [{ row: 1, column: 2 }, { row: 0, column: 2 }]],
+    ['down', [{ row: 3, column: 2 }, { row: 4, column: 2 }]],
+    ['left', [{ row: 2, column: 1 }, { row: 2, column: 0 }]],
+    ['right', [{ row: 2, column: 3 }, { row: 2, column: 4 }]],
+  ])('lists each entered cell in order when moving %s', (direction, path) => {
+    const initial = createGameState(stage(
+      Array.from({ length: 5 }, () => [0, 0, 0, 0, 0]), { row: 2, column: 2 },
+    ));
+    const plan = planMove(initial, direction);
+    expect(plan.path).toEqual(path);
+    expect(plan.state.player).toEqual(path.at(-1));
+    expect(initial.map.every((row) => row.every((tile) => tile === 0))).toBe(true);
+  });
+
+  it('excludes the wall and every cell behind it', () => {
+    const initial = createGameState(stage([[1, 0, 2, 0]], { row: 0, column: 0 }));
+    expect(planMove(initial, 'right').path).toEqual([{ row: 0, column: 1 }]);
+  });
+
+  it('returns an empty path for blocked moves and completed stages', () => {
+    const initial = createGameState(stage([[1, 0, 0]], { row: 0, column: 0 }));
+    expect(planMove(initial, 'left')).toEqual({ state: initial, path: [] });
+    const completed = movePlayer(initial, 'right');
+    expect(planMove(completed, 'left')).toEqual({ state: completed, path: [] });
   });
 });
