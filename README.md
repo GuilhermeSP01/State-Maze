@@ -41,7 +41,9 @@ A definição inicial é somente para leitura nos tipos TypeScript. Ao implement
 
 O tile de origem não alterna ao sair. Cada piso em que o jogador entra alterna entre 0 e 1, e a vitória é verificada ao terminar o movimento. A fase 1 contém o corredor `1 0 0`, cercado de paredes, com o jogador no primeiro piso; um deslize para a direita completa a fase.
 
-O schema serve como contrato. O construtor de fases será responsável por produzir mapas válidos; não há validação adicional no carregamento ou no CI. O pacote ainda não está integrado à tela de jogo.
+O schema serve como contrato. O construtor de fases será responsável por produzir mapas válidos; não há validação adicional no carregamento ou no CI. A tela de jogo carrega e renderiza o estado inicial, sem movimento ou alternância de tiles.
+
+Os arquivos de `maps/` usam nomes numéricos correspondentes ao `id` (por exemplo, `1.json`). O menu lista automaticamente os mapas disponíveis. A origem dos dados fica concentrada em `apps/game/src/stages/loadStage.ts`, permitindo substituí-la por uma API futuramente.
 
 ## Mobile
 

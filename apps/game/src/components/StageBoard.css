@@ -1,0 +1,28 @@
+.stage-board {
+  display: grid;
+  width: min(100%, 320px);
+  margin-block: 16px;
+}
+
+.stage-board-row {
+  display: contents;
+}
+
+.stage-tile {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid #777;
+}
+
+.stage-tile[data-tile="0"] { background: #fff; }
+.stage-tile[data-tile="1"] { background: #ccc; }
+.stage-tile[data-tile="2"] { background: #333; }
+
+.stage-player {
+  width: 40%;
+  aspect-ratio: 1;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #111;
+}

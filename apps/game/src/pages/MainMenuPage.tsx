@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import { availableStageNumbers } from '../stages/loadStage';
 
 export default function MainMenuPage() {
   const navigate = useNavigate();
@@ -7,7 +8,7 @@ export default function MainMenuPage() {
     <main>
       <h1>State Maze</h1>
       <nav aria-label="Fases">
-        {[1, 2, 3, 4, 5].map((stageNumber) => (
+        {availableStageNumbers.map((stageNumber) => (
           <button
             key={stageNumber}
             type="button"
