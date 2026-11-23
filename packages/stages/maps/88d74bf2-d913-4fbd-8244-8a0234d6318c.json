@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "id": "88d74bf2-d913-4fbd-8244-8a0234d6318c",
+  "worldId": "2af1c8bc-7332-4a4b-b74f-24f53be7fd3f",
+  "number": 1,
+  "map": [
+    [2, 2, 2, 2, 2],
+    [2, 1, 0, 0, 2],
+    [2, 2, 2, 2, 2]
+  ],
+  "playerStart": {
+    "row": 1,
+    "column": 1
+  }
+}

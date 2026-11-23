@@ -7,10 +7,23 @@ export type Position = {
   readonly column: number;
 };
 
-/** Initial stage data. Copy each map row before changing tiles during play. */
-export type StageDefinition = {
+/** Titles keyed by language code, with English as the fallback. */
+export type LocalizedTitle = Readonly<Record<string, string>> & {
+  readonly en: string;
+};
+
+export type WorldDefinition = {
   readonly schemaVersion: 1;
-  readonly id: number;
+  readonly id: string;
+  readonly title: LocalizedTitle;
+};
+
+/** Initial stage data. IDs are UUIDs; stage numbers are local to each world. */
+export type StageDefinition = {
+  readonly schemaVersion: 2;
+  readonly id: string;
+  readonly worldId: string;
+  readonly number: number;
   readonly map: readonly (readonly Tile[])[];
   readonly playerStart: Position;
 };
