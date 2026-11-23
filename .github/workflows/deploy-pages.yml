@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy main site to GitHub Pages
 
 on:
   push:
@@ -8,16 +8,15 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   build:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
@@ -29,27 +28,53 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build for GitHub Pages
-        run: npm run build --workspace=@state-maze/game -- --base=/State-Maze/
+      - name: Test
+        run: npm test --if-present
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+      - name: Build main site
+        env:
+          PAGES_BASE: /${{ github.event.repository.name }}/
+        run: npm run build --workspace=@state-maze/game -- --base="$PAGES_BASE"
+
+      - name: Disable Jekyll processing
+        run: touch apps/game/dist/.nojekyll
+
+      - name: Upload main build
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
+          name: main-site
           path: apps/game/dist
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      contents: write
+    concurrency:
+      group: pages-main
+      cancel-in-progress: false
     steps:
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
+      - name: Download main build
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: main-site
+          path: pages-build
+
+      - name: Publish main site and preserve PR previews
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 # v4
+        with:
+          branch: gh-pages
+          folder: pages-build
+          clean: true
+          clean-exclude: pr-preview/
+          force: false
+          attempt-limit: 10
+          commit-message: 'ci: publish main site'

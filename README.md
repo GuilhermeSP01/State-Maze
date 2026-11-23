@@ -68,6 +68,23 @@ The main menu includes a language selector. The saved preference (`state-maze.la
 
 Use `useTranslation()` for visible text and accessibility labels. Translation keys are typed from `en.json`. Keep code, routes, developer errors, and documentation in English; translated text belongs in locale files. Stage maps are independent of the selected language. No translation server or external service is required.
 
+## GitHub Pages and PR previews
+
+The deployment workflows store the compiled site on `gh-pages`. The root contains the `main` build; `pr-preview/pr-<number>/` contains each open pull request preview. Main deployments preserve `pr-preview/`, and deployment actions use non-force pushes to retain other updates.
+
+- `.github/workflows/deploy-pages.yml`: tests and publishes `main` on push or manual dispatch.
+- `.github/workflows/preview-pages.yml`: tests and publishes same-repository PRs targeting `main` on open, reopen, and new commits. Closing or merging a PR removes its preview without rebuilding.
+
+The preview URL is `https://guilhermesp01.github.io/State-Maze/pr-preview/pr-<number>/`. Each run includes the link in its Actions summary. Preview updates and removals become visible after GitHub Pages finishes publishing. PR comments are disabled for the initial rollout; the preview link is available in the Actions summary.
+
+### One-time activation
+
+1. Merge these workflows into `main` and run **Deploy main site to GitHub Pages** from `main`. It creates `gh-pages` with the main site and `.nojekyll`.
+2. In **Settings > Pages**, change **Source** from **GitHub Actions** to **Deploy from a branch**, select **gh-pages** and **/(root)**, and save. This switch is required by the PR preview action; do not keep the previous artifact deployment workflow running alongside it.
+3. Open a PR targeting `main`, or push a commit to an existing PR, to generate its preview. Both the deployment branch and published preview should appear in the Actions run results.
+
+The workflow grants repository write access only to deployment jobs; builds use a read-only token. No personal access token is required under repository policies that permit the declared workflow permissions. Fork PRs are excluded from publication. Closing a PR removes its published files; older versions can remain in the `gh-pages` Git history. Build artifacts expire after one day.
+
 ## Mobile
 
 Capacitor uses `apps/game/dist` as the web output directory and `com.statemaze.game` as the initial app identifier. Review the identifier before publishing.
