@@ -56,9 +56,9 @@ Stage loading lives in `apps/game/src/stages/loadStage.ts`; world loading and ca
 
 Use the arrow keys or swipe the board to slide until a wall or map boundary. Each entered floor toggles between 0 and 1; the starting floor stays unchanged. Completion is checked only after a slide ends, ignoring walls. New moves are disabled after completion or while the stage menu is open. Use **Restart** in that menu to restore the initial map and player position.
 
-Keyboard auto-repeat is ignored. Swipes use Pointer Events (touch, pen, and mouse), require at least 24 CSS pixels, and follow the dominant axis; taps, canceled gestures, and equal-axis diagonals do not move the player. Browser touch scrolling is disabled only on the active board. Movement is instantaneous; animations, move counters, saved progress, and automatic stage advancement are not included.
+Keyboard auto-repeat is ignored. Swipes use Pointer Events (touch, pen, and mouse), require at least 24 CSS pixels, and follow the dominant axis; taps, canceled gestures, and equal-axis diagonals do not move the player. Browser touch scrolling is disabled only on the active board. Movement is animated at 110 milliseconds per entered tile. The player travels continuously, and each floor toggles on arrival. Commands during a slide are ignored, and completion is displayed only after the animation ends. Restarting or leaving the stage cancels the current animation. The system reduced-motion preference uses the immediate final state instead. Move counters, saved progress, and automatic stage advancement are not included.
 
-Run the game rule tests with `npm test`. The `@state-maze/game-core` package has no React or browser dependencies and can also be used by a future stage analyzer.
+Run the game rule tests with `npm test`. The core exposes `planMove()` with the final state and ordered path; the React animation presents that path without changing the rules. The `@state-maze/game-core` package has no React or browser dependencies and can also be used by a future stage analyzer.
 
 ## Localization
 

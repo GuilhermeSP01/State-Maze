@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import type { StageDefinition, WorldDefinition } from '@state-maze/stages';
-import { createGameState, movePlayer } from '@state-maze/game-core';
-import type { Direction, GameState } from '@state-maze/game-core';
+import { useAnimatedGame } from '../hooks/useAnimatedGame';
 import StageBoard from '../components/StageBoard';
 import { loadStage } from '../stages/loadStage';
 import { loadWorld } from '../worlds/loadWorld';
@@ -11,7 +10,7 @@ import { getWorldTitle } from '../worlds/getWorldTitle';
 
 type StageLoadState =
   | { status: 'loading' }
-  | { status: 'ready'; stage: StageDefinition; world: WorldDefinition; game: GameState }
+  | { status: 'ready'; stage: StageDefinition; world: WorldDefinition }
   | { status: 'not-found' }
   | { status: 'error' };
 
@@ -35,7 +34,7 @@ function StageContent({ stageId }: { stageId: string }) {
       const stage = await loadStage(stageId);
       if (!stage) return null;
       const world = await loadWorld(stage.worldId);
-      return world ? { stage, world, game: createGameState(stage) } : null;
+      return world ? { stage, world } : null;
     }
 
     loadContent().then(
@@ -50,16 +49,12 @@ function StageContent({ stageId }: { stageId: string }) {
     return () => { active = false; };
   }, [stageId]);
 
-  const handleMove = useCallback((direction: Direction) => {
-    setState((current) => current.status === 'ready'
-      ? { ...current, game: movePlayer(current.game, direction) }
-      : current);
-  }, []);
+  const { game, visualPosition, isAnimating, move, restart: restartGame } = useAnimatedGame(
+    state.status === 'ready' ? state.stage : null,
+  );
 
   function restart() {
-    setState((current) => current.status === 'ready'
-      ? { ...current, game: createGameState(current.stage) }
-      : current);
+    restartGame();
     setMenuOpen(false);
   }
 
@@ -92,15 +87,17 @@ function StageContent({ stageId }: { stageId: string }) {
       {state.status === 'loading' && <p role="status">{t('stage.loading')}</p>}
       {state.status === 'not-found' && <p role="status">{t('stage.notFound')}</p>}
       {state.status === 'error' && <p role="alert">{t('stage.loadError')}</p>}
-      {state.status === 'ready' && (
+      {state.status === 'ready' && game && visualPosition && (
         <>
-          {state.game.completed && <p role="status">{t('stage.completed')}</p>}
+          {game.completed && <p role="status">{t('stage.completed')}</p>}
           <p id="stage-controls">{t('stage.controls')}</p>
           <StageBoard
             stageNumber={state.stage.number}
-            game={state.game}
-            onMove={handleMove}
-            disabled={menuOpen || state.game.completed}
+            game={game}
+            visualPosition={visualPosition}
+            isAnimating={isAnimating}
+            onMove={move}
+            disabled={menuOpen || game.completed || isAnimating}
           />
         </>
       )}
