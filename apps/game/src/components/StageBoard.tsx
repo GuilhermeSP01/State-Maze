@@ -1,18 +1,20 @@
 import type { StageDefinition } from '@state-maze/stages';
+import { useTranslation } from 'react-i18next';
 import './StageBoard.css';
 
 const tileLabels = {
-  0: 'Floor in state 0',
-  1: 'Floor in state 1',
-  2: 'Wall',
-};
+  0: 'board.floorOff',
+  1: 'board.floorOn',
+  2: 'board.wall',
+} as const;
 
 export default function StageBoard({ stage }: { stage: StageDefinition }) {
+  const { t } = useTranslation();
   return (
     <div
       className="stage-board"
       role="table"
-      aria-label={`Stage ${stage.id} map`}
+      aria-label={t('board.label', { number: stage.id })}
       style={{ gridTemplateColumns: `repeat(${stage.map[0].length}, minmax(0, 1fr))` }}
     >
       {stage.map.map((row, rowIndex) => (
@@ -26,7 +28,7 @@ export default function StageBoard({ stage }: { stage: StageDefinition }) {
                 className="stage-tile"
                 data-tile={tile}
                 role="cell"
-                aria-label={`${tileLabels[tile]}${hasPlayer ? ', player' : ''}`}
+                aria-label={t(tileLabels[tile], { context: hasPlayer ? 'player' : undefined })}
                 key={columnIndex}
               >
                 {hasPlayer && <span className="stage-player" aria-hidden="true" />}

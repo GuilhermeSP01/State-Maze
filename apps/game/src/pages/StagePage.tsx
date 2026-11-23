@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import type { StageDefinition } from '@state-maze/stages';
 import StageBoard from '../components/StageBoard';
@@ -23,6 +24,7 @@ export default function StagePage() {
 
 function StageContent({ stageNumber }: { stageNumber: number }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [state, setState] = useState<StageLoadState>({ status: 'loading' });
 
@@ -43,23 +45,23 @@ function StageContent({ stageNumber }: { stageNumber: number }) {
 
   return (
     <main>
-      <h1>Stage {stageNumber}</h1>
+      <h1>{t('stage.title', { number: stageNumber })}</h1>
       <button
         type="button"
         aria-expanded={menuOpen}
         aria-controls="stage-menu"
         onClick={() => setMenuOpen((open) => !open)}
       >
-        Menu
+        {t('navigation.menu')}
       </button>
-      <nav id="stage-menu" aria-label="Stage menu" hidden={!menuOpen}>
+      <nav id="stage-menu" aria-label={t('stage.menu')} hidden={!menuOpen}>
         <button type="button" onClick={() => navigate('/')}>
-          Back to main menu
+          {t('navigation.backToMainMenu')}
         </button>
       </nav>
-      {state.status === 'loading' && <p role="status">Loading stage…</p>}
-      {state.status === 'not-found' && <p role="status">Stage not found.</p>}
-      {state.status === 'error' && <p role="alert">Could not load the stage.</p>}
+      {state.status === 'loading' && <p role="status">{t('stage.loading')}</p>}
+      {state.status === 'not-found' && <p role="status">{t('stage.notFound')}</p>}
+      {state.status === 'error' && <p role="alert">{t('stage.loadError')}</p>}
       {state.status === 'ready' && <StageBoard stage={state.stage} />}
     </main>
   );

@@ -1,0 +1,21 @@
+{
+  "language": { "label": "Language" },
+  "navigation": { "menu": "Menu", "backToMainMenu": "Back to main menu" },
+  "stage": {
+    "list": "Stages",
+    "title": "Stage {{number}}",
+    "menu": "Stage menu",
+    "loading": "Loading stage…",
+    "notFound": "Stage not found.",
+    "loadError": "Could not load the stage."
+  },
+  "board": {
+    "label": "Stage {{number}} map",
+    "floorOff": "Floor in state 0",
+    "floorOff_player": "Floor in state 0, player",
+    "floorOn": "Floor in state 1",
+    "floorOn_player": "Floor in state 1, player",
+    "wall": "Wall",
+    "wall_player": "Wall, player"
+  }
+}

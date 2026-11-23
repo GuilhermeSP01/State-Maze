@@ -1,0 +1,21 @@
+{
+  "language": { "label": "Idioma" },
+  "navigation": { "menu": "Menu", "backToMainMenu": "Voltar para a tela inicial" },
+  "stage": {
+    "list": "Fases",
+    "title": "Fase {{number}}",
+    "menu": "Menu da fase",
+    "loading": "Carregando fase…",
+    "notFound": "Fase não encontrada.",
+    "loadError": "Não foi possível carregar a fase."
+  },
+  "board": {
+    "label": "Mapa da fase {{number}}",
+    "floorOff": "Piso em estado 0",
+    "floorOff_player": "Piso em estado 0, jogador",
+    "floorOn": "Piso em estado 1",
+    "floorOn_player": "Piso em estado 1, jogador",
+    "wall": "Parede",
+    "wall_player": "Parede, jogador"
+  }
+}

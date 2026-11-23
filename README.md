@@ -45,6 +45,14 @@ The schema serves as a contract. The stage editor will be responsible for produc
 
 Files in `maps/` use numeric names matching their `id` (for example, `1.json`). The menu automatically lists available maps. Data loading is centralized in `apps/game/src/stages/loadStage.ts`, allowing it to be replaced with an API later.
 
+## Localization
+
+The app uses `i18next` and `react-i18next` with bundled JSON translations in `apps/game/src/i18n/locales/`. English (`en`) is the source and fallback language; Brazilian Portuguese (`pt-BR`) is also available.
+
+The main menu includes a language selector. The saved preference (`state-maze.language` in local storage) takes precedence over the browser language. Portuguese browser variants use the Brazilian Portuguese translation; unsupported languages fall back to English. The HTML `lang` attribute follows the active language.
+
+Use `useTranslation()` for visible text and accessibility labels. Translation keys are typed from `en.json`. Keep code, routes, developer errors, and documentation in English; translated text belongs in locale files. Stage maps are independent of the selected language. No translation server or external service is required.
+
 ## Mobile
 
 Capacitor uses `apps/game/dist` as the web output directory and `com.statemaze.game` as the initial app identifier. Review the identifier before publishing.
