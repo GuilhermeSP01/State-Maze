@@ -94,12 +94,13 @@ function StageContent({ stageId }: { stageId: string }) {
       {state.status === 'error' && <p role="alert">{t('stage.loadError')}</p>}
       {state.status === 'ready' && (
         <>
+          {state.game.completed && <p role="status">{t('stage.completed')}</p>}
           <p id="stage-controls">{t('stage.controls')}</p>
           <StageBoard
             stageNumber={state.stage.number}
             game={state.game}
             onMove={handleMove}
-            disabled={menuOpen}
+            disabled={menuOpen || state.game.completed}
           />
         </>
       )}

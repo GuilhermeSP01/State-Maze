@@ -5,6 +5,7 @@ export type Direction = 'up' | 'down' | 'left' | 'right';
 export type GameState = {
   readonly map: readonly (readonly Tile[])[];
   readonly player: Position;
+  readonly completed: boolean;
 };
 
 const offsets: Record<Direction, Position> = {
@@ -18,10 +19,13 @@ export function createGameState(stage: StageDefinition): GameState {
   return {
     map: stage.map.map((row) => [...row]),
     player: { ...stage.playerStart },
+    completed: false,
   };
 }
 
 export function movePlayer(state: GameState, direction: Direction): GameState {
+  if (state.completed) return state;
+
   const offset = offsets[direction];
   let { row, column } = state.player;
   let map: Tile[][] | undefined;
@@ -38,5 +42,11 @@ export function movePlayer(state: GameState, direction: Direction): GameState {
     column = nextColumn;
   }
 
-  return map ? { map, player: { row, column } } : state;
+  if (!map) return state;
+
+  return {
+    map,
+    player: { row, column },
+    completed: map.every((tiles) => tiles.every((tile) => tile === 1 || tile === 2)),
+  };
 }
