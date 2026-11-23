@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { HashRouter } from 'react-router';
 import App from './App';
 import './style.css';
 
@@ -8,6 +9,8 @@ if (!app) throw new Error('Elemento #app ausente.');
 
 createRoot(app).render(
   <StrictMode>
-    <App />
+    <HashRouter>
+      <App />
+    </HashRouter>
   </StrictMode>,
 );

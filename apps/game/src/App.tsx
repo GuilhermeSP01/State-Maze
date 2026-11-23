@@ -1,33 +1,13 @@
-import { useEffect, useState } from 'react';
-import MainMenu from './screens/MainMenu';
-import LevelScreen from './screens/LevelScreen';
-
-function getLevelNumber(): number | null {
-  const match = /^#\/fase\/([1-9]\d*)$/.exec(window.location.hash);
-  if (!match) return null;
-
-  const levelNumber = Number(match[1]);
-  return Number.isSafeInteger(levelNumber) ? levelNumber : null;
-}
+import { Navigate, Route, Routes } from 'react-router';
+import MainMenuPage from './pages/MainMenuPage';
+import StagePage from './pages/StagePage';
 
 export default function App() {
-  const [levelNumber, setLevelNumber] = useState(getLevelNumber);
-
-  useEffect(() => {
-    const handleHashChange = () => setLevelNumber(getLevelNumber());
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  if (levelNumber !== null) {
-    return (
-      <LevelScreen
-        key={levelNumber}
-        levelNumber={levelNumber}
-        onBackToMenu={() => { window.location.hash = '/'; }}
-      />
-    );
-  }
-
-  return <MainMenu onSelectLevel={(number) => { window.location.hash = `/fase/${number}`; }} />;
+  return (
+    <Routes>
+      <Route path="/" element={<MainMenuPage />} />
+      <Route path="/stage/:stageNumber" element={<StagePage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
