@@ -1,17 +1,22 @@
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../components/LanguageSelector';
+import { availableStageNumbers } from '../stages/loadStage';
 
 export default function MainMenuPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <main>
       <h1>State Maze</h1>
-      <nav aria-label="Fases">
-        {[1, 2, 3, 4, 5].map((stageNumber) => (
+      <LanguageSelector />
+      <nav aria-label={t('stage.list')}>
+        {availableStageNumbers.map((stageNumber) => (
           <button
             key={stageNumber}
             type="button"
-            aria-label={`Fase ${stageNumber}`}
+            aria-label={t('stage.title', { number: stageNumber })}
             onClick={() => navigate(`/stage/${stageNumber}`)}
           >
             {stageNumber}
