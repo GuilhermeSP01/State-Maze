@@ -6,6 +6,9 @@
     "loadError": "Could not load the worlds."
   },
   "stage": {
+    "completed": "Stage completed!",
+    "restart": "Restart",
+    "controls": "Use the arrow keys or swipe the board to move.",
     "heading": "Stage",
     "list": "Stages",
     "title": "Stage {{number}}",

@@ -6,6 +6,9 @@
     "loadError": "Não foi possível carregar os mundos."
   },
   "stage": {
+    "completed": "Fase concluída!",
+    "restart": "Reiniciar",
+    "controls": "Use as setas do teclado ou deslize no tabuleiro para mover.",
     "heading": "Fase",
     "list": "Fases",
     "title": "Fase {{number}}",

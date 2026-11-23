@@ -24,6 +24,7 @@ npm run preview
 
 - `apps/game`: React app with Vite and Capacitor configuration.
 - `packages/stages`: shared world and stage contracts, TypeScript types, and initial maps.
+- `packages/game-core`: framework-independent game state, movement rules, and unit tests.
 - `tools`: future development tools.
 - `docs`: project documentation.
 
@@ -39,17 +40,25 @@ The `@state-maze/stages` package defines the format shared by the game, the futu
 
 Each stage contains `schemaVersion`, `id` (UUID), `worldId` (UUID), `number`, `map`, and `playerStart`. Stage schema version 2 replaces the numeric ID from version 1. A stage number is a positive integer local to its world; `(worldId, number)` is unique. IDs remain stable when titles, numbers, or world membership change. The map uses `0` for a floor tile in state 0, `1` for a floor tile in state 1, and `2` for a wall. Coordinates are zero-based: `row` identifies the row and `column` identifies the column, accessed as `map[row][column]`. New codes will be defined when special tiles are introduced.
 
-The initial definition is read-only in the TypeScript types. When gameplay is implemented, each map row must be copied to keep in-memory changes separate from the original map.
+The initial definition is read-only in the TypeScript types. Each new attempt copies every map row to keep in-memory changes separate from the original map.
 
 The starting tile does not toggle when the player leaves it. Each floor tile the player enters toggles between 0 and 1, and victory is checked at the end of a move. Stage 1 contains the corridor `1 0 0`, surrounded by walls, with the player on the first floor tile; sliding right completes the stage.
 
-The schema serves as a contract. The stage editor will be responsible for producing valid maps; there is no additional validation during loading or in CI. The game page loads and renders the initial state, without movement or tile toggling.
+The schema serves as a contract. The stage editor will be responsible for producing valid maps; there is no additional validation during loading or in CI. The game page creates an independent in-memory attempt from the stage definition.
 
 World and map filenames match their UUIDs. A stage explicitly references its world through `worldId`; folders do not determine membership. World titles are keyed by language code, with a required English title as fallback. The editor or future persistence layer is responsible for world references and unique stage numbers; the game adds no validation layer.
 
 The main menu groups stages by their explicit `worldId` and sorts each group by `number`. World titles use the active language, then its base language, then English. Stage links use `#/stage/<stage-uuid>`; display numbers and world titles can change without changing those links.
 
 Stage loading lives in `apps/game/src/stages/loadStage.ts`; world loading and catalog queries live in `apps/game/src/worlds/`. Both loaders accept UUIDs. The local catalog reads the bundled JSON definitions to obtain world membership and stage numbers. These data entry points can later be replaced with API calls.
+
+## Gameplay
+
+Use the arrow keys or swipe the board to slide until a wall or map boundary. Each entered floor toggles between 0 and 1; the starting floor stays unchanged. Completion is checked only after a slide ends, ignoring walls. New moves are disabled after completion or while the stage menu is open. Use **Restart** in that menu to restore the initial map and player position.
+
+Keyboard auto-repeat is ignored. Swipes use Pointer Events (touch, pen, and mouse), require at least 24 CSS pixels, and follow the dominant axis; taps, canceled gestures, and equal-axis diagonals do not move the player. Browser touch scrolling is disabled only on the active board. Movement is instantaneous; animations, move counters, saved progress, and automatic stage advancement are not included.
+
+Run the game rule tests with `npm test`. The `@state-maze/game-core` package has no React or browser dependencies and can also be used by a future stage analyzer.
 
 ## Localization
 
