@@ -43,7 +43,7 @@ function StageContent({ stageNumber }: { stageNumber: number }) {
 
   return (
     <main>
-      <h1>Fase {stageNumber}</h1>
+      <h1>Stage {stageNumber}</h1>
       <button
         type="button"
         aria-expanded={menuOpen}
@@ -52,14 +52,14 @@ function StageContent({ stageNumber }: { stageNumber: number }) {
       >
         Menu
       </button>
-      <nav id="stage-menu" aria-label="Menu da fase" hidden={!menuOpen}>
+      <nav id="stage-menu" aria-label="Stage menu" hidden={!menuOpen}>
         <button type="button" onClick={() => navigate('/')}>
-          Voltar para a tela inicial
+          Back to main menu
         </button>
       </nav>
-      {state.status === 'loading' && <p role="status">Carregando fase…</p>}
-      {state.status === 'not-found' && <p role="status">Fase não encontrada.</p>}
-      {state.status === 'error' && <p role="alert">Não foi possível carregar a fase.</p>}
+      {state.status === 'loading' && <p role="status">Loading stage…</p>}
+      {state.status === 'not-found' && <p role="status">Stage not found.</p>}
+      {state.status === 'error' && <p role="alert">Could not load the stage.</p>}
       {state.status === 'ready' && <StageBoard stage={state.stage} />}
     </main>
   );

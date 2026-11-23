@@ -7,12 +7,12 @@ export default function MainMenuPage() {
   return (
     <main>
       <h1>State Maze</h1>
-      <nav aria-label="Fases">
+      <nav aria-label="Stages">
         {availableStageNumbers.map((stageNumber) => (
           <button
             key={stageNumber}
             type="button"
-            aria-label={`Fase ${stageNumber}`}
+            aria-label={`Stage ${stageNumber}`}
             onClick={() => navigate(`/stage/${stageNumber}`)}
           >
             {stageNumber}

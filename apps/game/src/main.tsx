@@ -5,7 +5,7 @@ import App from './App';
 import './style.css';
 
 const app = document.querySelector<HTMLDivElement>('#app');
-if (!app) throw new Error('Elemento #app ausente.');
+if (!app) throw new Error('Missing #app element.');
 
 createRoot(app).render(
   <StrictMode>

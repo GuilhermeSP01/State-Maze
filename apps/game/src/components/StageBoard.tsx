@@ -2,9 +2,9 @@ import type { StageDefinition } from '@state-maze/stages';
 import './StageBoard.css';
 
 const tileLabels = {
-  0: 'Piso em estado 0',
-  1: 'Piso em estado 1',
-  2: 'Parede',
+  0: 'Floor in state 0',
+  1: 'Floor in state 1',
+  2: 'Wall',
 };
 
 export default function StageBoard({ stage }: { stage: StageDefinition }) {
@@ -12,7 +12,7 @@ export default function StageBoard({ stage }: { stage: StageDefinition }) {
     <div
       className="stage-board"
       role="table"
-      aria-label={`Mapa da fase ${stage.id}`}
+      aria-label={`Stage ${stage.id} map`}
       style={{ gridTemplateColumns: `repeat(${stage.map[0].length}, minmax(0, 1fr))` }}
     >
       {stage.map.map((row, rowIndex) => (
@@ -26,7 +26,7 @@ export default function StageBoard({ stage }: { stage: StageDefinition }) {
                 className="stage-tile"
                 data-tile={tile}
                 role="cell"
-                aria-label={`${tileLabels[tile]}${hasPlayer ? ', jogador' : ''}`}
+                aria-label={`${tileLabels[tile]}${hasPlayer ? ', player' : ''}`}
                 key={columnIndex}
               >
                 {hasPlayer && <span className="stage-player" aria-hidden="true" />}
