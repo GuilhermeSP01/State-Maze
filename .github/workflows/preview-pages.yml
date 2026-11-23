@@ -55,6 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     concurrency:
       group: pages-preview-${{ github.event.number }}
       cancel-in-progress: false
@@ -80,7 +81,7 @@ jobs:
           preview-branch: gh-pages
           umbrella-dir: pr-preview
           action: auto
-          comment: false
+          comment: true
           qr-code: false
           pages-base-url: ${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/
           deploy-commit-message: 'ci: publish preview for PR #${{ github.event.number }}'

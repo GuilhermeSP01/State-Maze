@@ -75,7 +75,7 @@ The deployment workflows store the compiled site on `gh-pages`. The root contain
 - `.github/workflows/deploy-pages.yml`: tests and publishes `main` on push or manual dispatch.
 - `.github/workflows/preview-pages.yml`: tests and publishes same-repository PRs targeting `main` on open, reopen, and new commits. Closing or merging a PR removes its preview without rebuilding.
 
-The preview URL is `https://guilhermesp01.github.io/State-Maze/pr-preview/pr-<number>/`. Each run includes the link in its Actions summary. Preview updates and removals become visible after GitHub Pages finishes publishing. PR comments are disabled for the initial rollout; the preview link is available in the Actions summary.
+The preview URL is `https://guilhermesp01.github.io/State-Maze/pr-preview/pr-<number>/`. Each run includes the link in its Actions summary. Preview updates and removals become visible after GitHub Pages finishes publishing. The GitHub Actions bot maintains a single PR comment with the preview link, updates it after new deployments, and marks the preview as removed when the PR closes. The link is also available in the Actions summary.
 
 ### One-time activation
 
@@ -83,7 +83,7 @@ The preview URL is `https://guilhermesp01.github.io/State-Maze/pr-preview/pr-<nu
 2. In **Settings > Pages**, change **Source** from **GitHub Actions** to **Deploy from a branch**, select **gh-pages** and **/(root)**, and save. This switch is required by the PR preview action; do not keep the previous artifact deployment workflow running alongside it.
 3. Open a PR targeting `main`, or push a commit to an existing PR, to generate its preview. Both the deployment branch and published preview should appear in the Actions run results.
 
-The workflow grants repository write access only to deployment jobs; builds use a read-only token. No personal access token is required under repository policies that permit the declared workflow permissions. Fork PRs are excluded from publication. Closing a PR removes its published files; older versions can remain in the `gh-pages` Git history. Build artifacts expire after one day.
+The workflow grants repository write access only to deployment jobs, with PR comment permission for preview deployments; builds use a read-only token. No personal access token is required under repository policies that permit the declared workflow permissions. Fork PRs are excluded from publication. Closing a PR removes its published files; older versions can remain in the `gh-pages` Git history. Build artifacts expire after one day.
 
 ## Mobile
 
