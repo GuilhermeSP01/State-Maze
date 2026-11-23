@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createGameState, planMove } from '@state-maze/game-core';
 import type { Direction, GameState } from '@state-maze/game-core';
 import type { Position, StageDefinition, Tile } from '@state-maze/stages';
@@ -11,16 +11,24 @@ type View = {
   isAnimating: boolean;
 };
 
-export function useAnimatedGame(stage: StageDefinition | null) {
+export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
   const [view, setView] = useState<View>({ game: null, visualPosition: null, isAnimating: false });
   const currentGame = useRef<GameState | null>(null);
   const frame = useRef<number | null>(null);
   const moving = useRef(false);
+  const pendingDirection = useRef<Direction | null>(null);
+  const inputEnabled = useRef(enabled);
+
+  useLayoutEffect(() => {
+    inputEnabled.current = enabled;
+    if (!enabled) pendingDirection.current = null;
+  }, [enabled]);
 
   const cancel = useCallback(() => {
     if (frame.current !== null) cancelAnimationFrame(frame.current);
     frame.current = null;
     moving.current = false;
+    pendingDirection.current = null;
   }, []);
 
   const restart = useCallback(() => {
@@ -35,9 +43,13 @@ export function useAnimatedGame(stage: StageDefinition | null) {
     return cancel;
   }, [restart, cancel]);
 
-  const move = useCallback((direction: Direction) => {
+  const move = useCallback(function requestMove(direction: Direction): void {
     const initial = currentGame.current;
-    if (!initial || moving.current) return;
+    if (!initial || !inputEnabled.current || initial.completed) return;
+    if (moving.current) {
+      pendingDirection.current = direction;
+      return;
+    }
     const plan = planMove(initial, direction);
     if (!plan.path.length) return;
 
@@ -74,6 +86,9 @@ export function useAnimatedGame(stage: StageDefinition | null) {
         moving.current = false;
         currentGame.current = plan.state;
         setView({ game: plan.state, visualPosition: plan.state.player, isAnimating: false });
+        const buffered = pendingDirection.current;
+        pendingDirection.current = null;
+        if (buffered && !plan.state.completed && inputEnabled.current) requestMove(buffered);
         return;
       }
 

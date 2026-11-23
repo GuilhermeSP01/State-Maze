@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "npm run dev --workspace=@state-maze/game",
     "build": "npm run typecheck --workspace=@state-maze/game-core && npm run build --workspace=@state-maze/game",
-    "test": "npm run test --workspace=@state-maze/game-core",
+    "test": "npm run test --workspace=@state-maze/game-core && npm run test --workspace=@state-maze/game",
     "typecheck": "npm run typecheck --workspace=@state-maze/game-core && npm run typecheck --workspace=@state-maze/game",
     "preview": "npm run preview --workspace=@state-maze/game",
     "cap:sync": "npm run build && npm run cap:sync --workspace=@state-maze/game",

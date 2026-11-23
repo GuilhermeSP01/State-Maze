@@ -51,6 +51,7 @@ function StageContent({ stageId }: { stageId: string }) {
 
   const { game, visualPosition, isAnimating, move, restart: restartGame } = useAnimatedGame(
     state.status === 'ready' ? state.stage : null,
+    !menuOpen,
   );
 
   function restart() {
@@ -97,7 +98,7 @@ function StageContent({ stageId }: { stageId: string }) {
             visualPosition={visualPosition}
             isAnimating={isAnimating}
             onMove={move}
-            disabled={menuOpen || game.completed || isAnimating}
+            disabled={menuOpen || game.completed}
           />
         </>
       )}
