@@ -1,0 +1,18 @@
+{
+  "name": "state-maze",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "npm run dev --workspace=@state-maze/game",
+    "build": "npm run build --workspace=@state-maze/game",
+    "typecheck": "npm run typecheck --workspace=@state-maze/game",
+    "preview": "npm run preview --workspace=@state-maze/game",
+    "cap:sync": "npm run build && npm run cap:sync --workspace=@state-maze/game",
+    "android:add": "npm run build && npm run android:add --workspace=@state-maze/game",
+    "android:open": "npm run android:open --workspace=@state-maze/game",
+    "ios:add": "npm run build && npm run ios:add --workspace=@state-maze/game",
+    "ios:open": "npm run ios:open --workspace=@state-maze/game"
+  }
+}

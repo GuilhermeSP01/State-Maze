@@ -1,0 +1,27 @@
+{
+  "name": "@state-maze/game",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "cap:sync": "cap sync",
+    "android:add": "cap add android",
+    "android:open": "cap open android",
+    "ios:add": "cap add ios",
+    "ios:open": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/ios": "^8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}
