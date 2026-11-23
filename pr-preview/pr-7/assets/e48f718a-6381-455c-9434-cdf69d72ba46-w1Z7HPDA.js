@@ -1,1 +1,0 @@
-var e={schemaVersion:2,id:`e48f718a-6381-455c-9434-cdf69d72ba46`,worldId:`2af1c8bc-7332-4a4b-b74f-24f53be7fd3f`,number:3,map:[[2,2,2,2,2,2,2],[2,1,1,1,1,0,2],[2,0,2,2,2,1,2],[2,0,0,0,0,1,2],[2,2,2,2,2,2,2]],playerStart:{row:1,column:1}};export{e as default};
