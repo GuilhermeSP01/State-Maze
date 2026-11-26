@@ -1,3 +1,4 @@
+import type { Ref } from 'react';
 import type { Position } from '@state-maze/stages';
 import type { Direction, GameState } from '@state-maze/game-core';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +12,7 @@ const tileLabels = {
 } as const;
 
 type StageBoardProps = {
+  ref: Ref<HTMLDivElement>;
   stageNumber: number;
   game: GameState;
   visualPosition: Position;
@@ -20,19 +22,20 @@ type StageBoardProps = {
 };
 
 export default function StageBoard({
-  stageNumber, game, visualPosition, isAnimating, onMove, disabled,
+  ref, stageNumber, game, visualPosition, isAnimating, onMove, disabled,
 }: StageBoardProps) {
   const { t } = useTranslation();
   const inputHandlers = usePlayerControls(onMove, !disabled);
 
   return (
     <div
+      ref={ref}
       className="stage-board"
       role="table"
-      tabIndex={0}
+      tabIndex={disabled ? -1 : 0}
       aria-busy={isAnimating}
       aria-label={t('board.label', { number: stageNumber })}
-      aria-describedby="stage-controls"
+      aria-describedby={game.completed ? undefined : 'stage-goal stage-controls'}
       style={{
         gridTemplateColumns: `repeat(${game.map[0].length}, minmax(0, 1fr))`,
       }}

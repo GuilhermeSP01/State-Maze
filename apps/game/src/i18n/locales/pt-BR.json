@@ -1,18 +1,24 @@
 {
   "language": { "label": "Idioma" },
-  "navigation": { "menu": "Menu", "backToMainMenu": "Voltar para a tela inicial" },
+  "navigation": { "backToStages": "Voltar às fases" },
   "world": {
     "loading": "Carregando mundos…",
     "loadError": "Não foi possível carregar os mundos."
   },
   "stage": {
     "completed": "Fase concluída!",
+    "next": "Próxima fase",
+    "replay": "Jogar de novo",
     "restart": "Reiniciar",
-    "controls": "Use as setas do teclado ou deslize no tabuleiro para mover.",
+    "goal": "Deixe todas as casas amarelas.",
+    "controls": "Use as setas ou deslize no tabuleiro.",
+    "toggleHint": "Cada casa em que a peça entra alterna entre 0 e 1.",
     "heading": "Fase",
     "list": "Fases",
     "title": "Fase {{number}}",
-    "menu": "Menu da fase",
+    "pause": "Pausar",
+    "paused": "Em pausa",
+    "resume": "Retomar",
     "loading": "Carregando fase…",
     "notFound": "Fase não encontrada.",
     "loadError": "Não foi possível carregar a fase."
