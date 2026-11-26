@@ -2,6 +2,17 @@
   font-family: system-ui, sans-serif;
 }
 
+:root:has(.stage-page) {
+  color-scheme: dark;
+  background: #191b1d;
+  color: #edebe5;
+}
+
+.stage-page {
+  max-width: 408px;
+  margin-inline: auto;
+}
+
 body {
   margin: 0;
   padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));

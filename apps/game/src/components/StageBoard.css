@@ -2,9 +2,17 @@
   position: relative;
   touch-action: none;
   display: grid;
-  width: min(100%, 320px);
+  width: 100%;
   margin-block: 16px;
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 4%), 0 5px 9px rgb(0 0 0 / 23%);
   user-select: none;
+}
+
+.stage-board:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
 }
 
 .stage-board-row {
@@ -12,23 +20,22 @@
 }
 
 .stage-tile {
-  box-sizing: border-box;
-  display: grid;
-  place-items: center;
   aspect-ratio: 1;
-  border: 1px solid #777;
 }
 
-.stage-tile[data-tile="0"] { background: #fff; }
-.stage-tile[data-tile="1"] { background: #ccc; }
-.stage-tile[data-tile="2"] { background: #333; }
+.stage-tile[data-tile="0"] { background: #a9afb3; }
+.stage-tile[data-tile="1"] { background: #e8be52; }
+.stage-tile[data-tile="2"] { background: #393b3c; }
+
+.stage-tile:is([data-tile="0"], [data-tile="1"]) {
+  box-shadow: inset -1px -1px rgb(22 27 33 / 7%);
+}
 
 .stage-player {
   position: absolute;
   transform: translate(-50%, -50%);
   pointer-events: none;
   aspect-ratio: 1;
-  border: 2px solid #fff;
   border-radius: 50%;
-  background: #111;
+  background: #273545;
 }

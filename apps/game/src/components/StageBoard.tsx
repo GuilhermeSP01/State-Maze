@@ -59,7 +59,7 @@ export default function StageBoard({
         className="stage-player"
         aria-hidden="true"
         style={{
-          width: `${40 / game.map[0].length}%`,
+          width: `${50 / game.map[0].length}%`,
           left: `${((visualPosition.column + 0.5) / game.map[0].length) * 100}%`,
           top: `${((visualPosition.row + 0.5) / game.map.length) * 100}%`,
         }}

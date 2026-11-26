@@ -60,7 +60,7 @@ function StageContent({ stageId }: { stageId: string }) {
   }
 
   return (
-    <main>
+    <main className="stage-page">
       <h1>
         {state.status === 'ready'
           ? t('stage.title', { number: state.stage.number })
