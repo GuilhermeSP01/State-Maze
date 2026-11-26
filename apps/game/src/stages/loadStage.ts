@@ -21,3 +21,7 @@ export async function listStages() {
   const stages = await Promise.all([...loaders.values()].map((load) => load()));
   return stages.map(({ id, worldId, number }) => ({ id, worldId, number }));
 }
+
+export function getWorldStages(stages: Awaited<ReturnType<typeof listStages>>, worldId: string) {
+  return stages.filter((stage) => stage.worldId === worldId).sort((a, b) => a.number - b.number);
+}

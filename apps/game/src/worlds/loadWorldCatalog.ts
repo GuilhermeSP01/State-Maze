@@ -1,4 +1,4 @@
-import { listStages } from '../stages/loadStage';
+import { getWorldStages, listStages } from '../stages/loadStage';
 import { listWorlds } from './loadWorld';
 
 export async function loadWorldCatalog() {
@@ -6,8 +6,6 @@ export async function loadWorldCatalog() {
 
   return worlds.map((world) => ({
     world,
-    stages: stages
-      .filter((stage) => stage.worldId === world.id)
-      .sort((a, b) => a.number - b.number),
+    stages: getWorldStages(stages, world.id),
   }));
 }

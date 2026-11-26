@@ -1,18 +1,24 @@
 {
   "language": { "label": "Language" },
-  "navigation": { "menu": "Menu", "backToMainMenu": "Back to main menu" },
+  "navigation": { "backToStages": "Back to stages" },
   "world": {
     "loading": "Loading worlds…",
     "loadError": "Could not load the worlds."
   },
   "stage": {
     "completed": "Stage completed!",
+    "next": "Next stage",
+    "replay": "Play again",
     "restart": "Restart",
-    "controls": "Use the arrow keys or swipe the board to move.",
+    "goal": "Turn every tile yellow.",
+    "controls": "Use the arrow keys or swipe the board.",
+    "toggleHint": "Each tile the piece enters switches between 0 and 1.",
     "heading": "Stage",
     "list": "Stages",
     "title": "Stage {{number}}",
-    "menu": "Stage menu",
+    "pause": "Pause",
+    "paused": "Paused",
+    "resume": "Resume",
     "loading": "Loading stage…",
     "notFound": "Stage not found.",
     "loadError": "Could not load the stage."

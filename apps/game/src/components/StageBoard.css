@@ -1,18 +1,15 @@
 .stage-board {
   position: relative;
-  touch-action: none;
   display: grid;
   width: 100%;
-  margin-block: 16px;
   overflow: hidden;
   border-radius: 5px;
   box-shadow: 0 0 0 1px rgb(255 255 255 / 4%), 0 5px 9px rgb(0 0 0 / 23%);
   user-select: none;
 }
 
-.stage-board:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 4px;
+.stage-board[tabindex="0"] {
+  touch-action: none;
 }
 
 .stage-board-row {
@@ -24,7 +21,7 @@
 }
 
 .stage-tile[data-tile="0"] { background: #a9afb3; }
-.stage-tile[data-tile="1"] { background: #e8be52; }
+.stage-tile[data-tile="1"] { background: var(--tile-on); }
 .stage-tile[data-tile="2"] { background: #393b3c; }
 
 .stage-tile:is([data-tile="0"], [data-tile="1"]) {

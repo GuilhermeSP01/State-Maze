@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import type { HTMLAttributes, PointerEvent } from 'react';
+import type { HTMLAttributes, KeyboardEvent, PointerEvent } from 'react';
 import type { Direction } from '@state-maze/game-core';
 
 const keyDirections: Record<string, Direction> = {
@@ -13,7 +13,7 @@ const minimumSwipeDistance = 24;
 
 type SwipeStart = { pointerId: number; x: number; y: number };
 type BoardInputHandlers = Pick<HTMLAttributes<HTMLDivElement>,
-  'onPointerDown' | 'onPointerUp' | 'onPointerCancel' | 'onLostPointerCapture'>;
+  'onKeyDown' | 'onPointerDown' | 'onPointerUp' | 'onPointerCancel' | 'onLostPointerCapture'>;
 
 export function usePlayerControls(
   onMove: (direction: Direction) => void,
@@ -23,22 +23,14 @@ export function usePlayerControls(
 
   useEffect(() => {
     swipeStart.current = null;
-    if (!enabled) return;
+  }, [enabled]);
 
-    function handleKeyDown(event: KeyboardEvent) {
-      const direction = keyDirections[event.key];
-      if (!direction || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
-      const target = event.target;
-      if (target instanceof HTMLElement
-        && (target.isContentEditable || target.closest('input, textarea, select'))) return;
-
-      event.preventDefault();
-      if (!event.repeat) onMove(direction);
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [enabled, onMove]);
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    const direction = keyDirections[event.key];
+    if (!enabled || !direction || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+    event.preventDefault();
+    if (!event.repeat) onMove(direction);
+  }
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
     if (!enabled || !event.isPrimary || event.button !== 0) {
@@ -66,6 +58,7 @@ export function usePlayerControls(
   }
 
   return {
+    onKeyDown: handleKeyDown,
     onPointerDown: handlePointerDown,
     onPointerUp: handlePointerUp,
     onPointerCancel: () => { swipeStart.current = null; },
