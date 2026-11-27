@@ -9,6 +9,12 @@
     "loading": "Carregando mundos…",
     "loadError": "Não foi possível carregar os mundos."
   },
+  "campaign": {
+    "set": "Set {{number}}",
+    "previousSet": "Set anterior",
+    "nextSet": "Próximo set",
+    "boss": "Chefe"
+  },
   "stage": {
     "completed": "Fase concluída!",
     "next": "Próxima fase",

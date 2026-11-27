@@ -9,6 +9,12 @@
     "loading": "Loading worlds…",
     "loadError": "Could not load the worlds."
   },
+  "campaign": {
+    "set": "Set {{number}}",
+    "previousSet": "Previous set",
+    "nextSet": "Next set",
+    "boss": "Boss"
+  },
   "stage": {
     "completed": "Stage completed!",
     "next": "Next stage",
