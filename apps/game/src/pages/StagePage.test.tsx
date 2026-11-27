@@ -103,3 +103,43 @@ describe('stage navigation', () => {
     expect(document.activeElement).toBe(element('.stage-board'));
   });
 });
+
+it('moves as soon as a swipe is recognized and consumes it once', async () => {
+  await click('.catalog-stage:nth-of-type(2)');
+  const board = element('.stage-board');
+  const player = () => element('[aria-label$=", jogador"]');
+  const start = player();
+  const destination = element('.stage-board-row:nth-child(4) .stage-tile:nth-child(2)');
+  const swipe = (type: string, clientX: number, clientY: number) => act(() => {
+    board.dispatchEvent(new PointerEvent(type, {
+      pointerId: 1,
+      pointerType: 'touch',
+      isPrimary: true,
+      button: 0,
+      clientX,
+      clientY,
+      bubbles: true,
+    }));
+  });
+
+  await swipe('pointerdown', 0, 0);
+  await swipe('pointermove', 0, 23);
+  expect(player()).toBe(start);
+  await swipe('pointermove', 24, 24);
+  expect(player()).toBe(start);
+  await swipe('pointermove', 0, 24);
+  expect(player()).toBe(destination);
+
+  await swipe('pointermove', 80, 24);
+  await swipe('pointerup', 80, 24);
+  expect(player()).toBe(destination);
+
+  await swipe('pointerdown', 0, 0);
+  await swipe('pointercancel', 0, 0);
+  await swipe('pointerup', 24, 0);
+  expect(player()).toBe(destination);
+
+  await swipe('pointerdown', 0, 0);
+  await swipe('pointerup', 24, 0);
+  expect(player()).toBe(element('.stage-board-row:nth-child(4) .stage-tile:nth-child(4)'));
+});

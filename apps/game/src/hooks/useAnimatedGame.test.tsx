@@ -35,7 +35,6 @@ async function advance(milliseconds: number) {
 }
 
 async function finishMove() {
-  await advance(0);
   await advance(1000);
 }
 
@@ -43,6 +42,7 @@ beforeEach(async () => {
   frames = new Map();
   nextFrame = 0;
   timestamp = 0;
+  vi.spyOn(performance, 'now').mockImplementation(() => timestamp);
   vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
   vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
     frames.set(++nextFrame, callback);
@@ -63,13 +63,27 @@ afterEach(async () => {
   vi.unstubAllGlobals();
 });
 
-describe('animated movement buffer', () => {
+describe('animated movement', () => {
+  it('moves on the first frame and toggles a tile on arrival', async () => {
+    await act(() => session.move('right'));
+    await advance(16);
+    expect(session.visualPosition?.column).toBeCloseTo(1 + 16 / 65);
+    expect(session.game?.player).toEqual(stage.playerStart);
+    expect(session.game?.map[1][2]).toBe(1);
+
+    await advance(49);
+    expect(session.visualPosition).toEqual({ row: 1, column: 2 });
+    expect(session.game?.map[1][2]).toBe(0);
+  });
+
   it('executes a buffered direction after the current move finishes', async () => {
     await act(() => { session.move('right'); session.move('down'); });
-    await finishMove();
+    await advance(260);
     expect(session.game?.player).toEqual({ row: 1, column: 5 });
     expect(session.isAnimating).toBe(true);
-    await finishMove();
+    await advance(16);
+    expect(session.visualPosition?.row).toBeCloseTo(1 + 16 / 65);
+    await advance(114);
     expect(session.game?.player).toEqual({ row: 3, column: 5 });
     expect(session.isAnimating).toBe(false);
   });
@@ -108,7 +122,6 @@ describe('animated movement buffer', () => {
 
   it('cancels the animation and buffered direction on restart', async () => {
     await act(() => { session.move('right'); session.move('down'); });
-    await advance(0);
     await advance(150);
     await act(() => session.restart());
     await finishMove();
@@ -121,10 +134,9 @@ describe('animated movement buffer', () => {
   it('discards buffered input when the completed move wins the stage', async () => {
     await render(true, firstStage as StageDefinition);
     await act(() => { session.move('right'); session.move('left'); });
-    await advance(0);
-    await advance(110);
+    await advance(65);
     expect(session.game?.completed).toBe(false);
-    await advance(110);
+    await advance(65);
     expect(session.game?.completed).toBe(true);
     expect(session.game?.player).toEqual({ row: 1, column: 3 });
     expect(session.isAnimating).toBe(false);

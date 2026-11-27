@@ -13,7 +13,7 @@ const minimumSwipeDistance = 24;
 
 type SwipeStart = { pointerId: number; x: number; y: number };
 type BoardInputHandlers = Pick<HTMLAttributes<HTMLDivElement>,
-  'onKeyDown' | 'onPointerDown' | 'onPointerUp' | 'onPointerCancel' | 'onLostPointerCapture'>;
+  'onKeyDown' | 'onPointerDown' | 'onPointerMove' | 'onPointerUp' | 'onPointerCancel' | 'onLostPointerCapture'>;
 
 export function usePlayerControls(
   onMove: (direction: Direction) => void,
@@ -33,18 +33,14 @@ export function usePlayerControls(
   }
 
   function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
-    if (!enabled || !event.isPrimary || event.button !== 0) {
-      swipeStart.current = null;
-      return;
-    }
+    if (!enabled || !event.isPrimary || event.button !== 0) return;
     swipeStart.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
     event.currentTarget.setPointerCapture(event.pointerId);
     event.currentTarget.focus({ preventScroll: true });
   }
 
-  function handlePointerUp(event: PointerEvent<HTMLDivElement>) {
+  function handleSwipe(event: PointerEvent<HTMLDivElement>) {
     const start = swipeStart.current;
-    swipeStart.current = null;
     if (!enabled || !start || start.pointerId !== event.pointerId) return;
 
     const dx = event.clientX - start.x;
@@ -52,16 +48,25 @@ export function usePlayerControls(
     if (Math.max(Math.abs(dx), Math.abs(dy)) < minimumSwipeDistance) return;
     if (Math.abs(dx) === Math.abs(dy)) return;
 
+    swipeStart.current = null;
     onMove(Math.abs(dx) > Math.abs(dy)
       ? (dx > 0 ? 'right' : 'left')
       : (dy > 0 ? 'down' : 'up'));
   }
 
+  function clearSwipe(event: PointerEvent<HTMLDivElement>) {
+    if (swipeStart.current?.pointerId === event.pointerId) swipeStart.current = null;
+  }
+
   return {
     onKeyDown: handleKeyDown,
     onPointerDown: handlePointerDown,
-    onPointerUp: handlePointerUp,
-    onPointerCancel: () => { swipeStart.current = null; },
-    onLostPointerCapture: () => { swipeStart.current = null; },
+    onPointerMove: handleSwipe,
+    onPointerUp: (event) => {
+      handleSwipe(event);
+      clearSwipe(event);
+    },
+    onPointerCancel: clearSwipe,
+    onLostPointerCapture: clearSwipe,
   };
 }
