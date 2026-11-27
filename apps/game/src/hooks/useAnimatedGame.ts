@@ -3,7 +3,7 @@ import { createGameState, planMove } from '@state-maze/game-core';
 import type { Direction, GameState } from '@state-maze/game-core';
 import type { Position, StageDefinition, Tile } from '@state-maze/stages';
 
-const millisecondsPerTile = 110;
+const millisecondsPerTile = 65;
 
 type View = {
   game: GameState | null;
@@ -50,6 +50,7 @@ export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
       pendingDirection.current = direction;
       return;
     }
+    const started = performance.now();
     const plan = planMove(initial, direction);
     if (!plan.path.length) return;
 
@@ -61,14 +62,13 @@ export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
 
     moving.current = true;
     setView({ game: initial, visualPosition: initial.player, isAnimating: true });
-    let started: number | null = null;
     let arrived = 0;
     let map = initial.map;
     const origin = initial.player;
 
     function tick(timestamp: number) {
-      started ??= timestamp;
-      const progress = Math.min((timestamp - started) / millisecondsPerTile, plan.path.length);
+      const elapsed = Math.max(0, timestamp - started);
+      const progress = Math.min(elapsed / millisecondsPerTile, plan.path.length);
       const reached = Math.floor(progress);
 
       if (reached > arrived) {
