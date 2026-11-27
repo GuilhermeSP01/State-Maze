@@ -430,13 +430,15 @@ select {
 .campaign-page .catalog-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   margin-block-end: 20px;
 }
 
 .campaign-page .catalog-header h1 {
   margin: 0;
-  font-size: clamp(2rem, 6vw, 2.75rem);
+  color: var(--menu-muted);
+  font-size: clamp(1.5rem, 5vw, 2rem);
   line-height: 1;
   letter-spacing: -0.065em;
 }
