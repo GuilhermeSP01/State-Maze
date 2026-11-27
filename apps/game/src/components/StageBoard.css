@@ -34,7 +34,6 @@
   pointer-events: none;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: #273545;
 }
 
 .board-lighting {
@@ -43,4 +42,94 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+
+.player-body {
+  --stretch: scale(1.22, .86);
+  --squash: scale(.78, 1.15);
+  --nudge: translateX(24%);
+  --rim: #738293;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 26%, #495b6e, #273545 65%);
+  box-shadow: inset 0 -0.08em 0 var(--rim);
+}
+
+.player-body[data-lit="true"] {
+  --rim: #ffe49a;
+}
+
+.player-body[data-direction="left"] {
+  --nudge: translateX(-24%);
+}
+
+.player-body:is([data-direction="up"], [data-direction="down"]) {
+  --stretch: scale(.86, 1.22);
+  --squash: scale(1.15, .78);
+  --nudge: translateY(24%);
+}
+
+.player-body[data-direction="up"] {
+  --nudge: translateY(-24%);
+}
+
+.player-eyes {
+  position: absolute;
+  inset: 33% 24% 42%;
+  display: flex;
+  justify-content: space-between;
+  transition: transform 50ms ease-out;
+}
+
+.player-eyes::before,
+.player-eyes::after {
+  content: "";
+  width: 31%;
+  border-radius: 50%;
+  background: #fff9e9;
+}
+
+.player-eyes[data-gaze="left"] { transform: translateX(-24%); }
+.player-eyes[data-gaze="right"] { transform: translateX(24%); }
+.player-eyes[data-gaze="up"] { transform: translateY(-35%); }
+.player-eyes[data-gaze="down"] { transform: translateY(35%); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .player-body[data-phase="slide"] { animation: player-stretch 55ms ease-out both; }
+  .player-body[data-phase="impact"] { animation: player-impact 150ms ease-out; }
+  .player-body[data-phase="blocked"] { animation: player-bump 160ms ease-out; }
+  .player-body[data-phase="win"] { animation: player-hop 350ms ease-in-out; }
+}
+
+@keyframes player-stretch {
+  from { transform: scale(1); }
+  to { transform: var(--stretch); }
+}
+
+@keyframes player-impact {
+  from { transform: var(--stretch); }
+  35% { transform: var(--nudge) var(--squash); }
+  to { transform: scale(1); }
+}
+
+@keyframes player-bump {
+  0%, 100% { transform: scale(1); }
+  40% { transform: var(--nudge) var(--squash); }
+}
+
+@keyframes player-hop {
+  15%, 78% { transform: scale(1.16, .8); }
+  48% { transform: translateY(-40%) scale(.94, 1.08); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-eyes { transition: none; }
+  .player-body[data-phase="blocked"] { animation: player-outline 180ms step-end; }
+}
+
+@keyframes player-outline {
+  from { outline: 2px solid #fff9e9; }
+  to { outline: none; }
 }

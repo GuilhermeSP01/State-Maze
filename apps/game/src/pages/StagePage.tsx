@@ -82,7 +82,7 @@ function StageContent({ stageId }: { stageId: string }) {
     return () => { active = false; };
   }, [stageId]);
 
-  const { game, visualPosition, isAnimating, move, restart: restartGame } = useAnimatedGame(
+  const { game, visualPosition, isAnimating, reaction, move, restart: restartGame } = useAnimatedGame(
     state.status === 'ready' ? state.stage : null,
     !paused,
   );
@@ -171,6 +171,7 @@ function StageContent({ stageId }: { stageId: string }) {
             game={game}
             visualPosition={visualPosition}
             isAnimating={isAnimating}
+            reaction={reaction}
             onMove={move}
             lighting={lighting}
             disabled={paused || completed}

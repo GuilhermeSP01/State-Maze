@@ -78,12 +78,14 @@ describe('animated movement', () => {
 
   it('executes a buffered direction after the current move finishes', async () => {
     await act(() => { session.move('right'); session.move('down'); });
+    expect(session.reaction).toMatchObject({ phase: 'slide', direction: 'right', gaze: 'down' });
     await advance(260);
     expect(session.game?.player).toEqual({ row: 1, column: 5 });
     expect(session.isAnimating).toBe(true);
     await advance(16);
     expect(session.visualPosition?.row).toBeCloseTo(1 + 16 / 65);
     await advance(114);
+    expect(session.reaction.phase).toBe('impact');
     expect(session.game?.player).toEqual({ row: 3, column: 5 });
     expect(session.isAnimating).toBe(false);
   });
@@ -138,6 +140,7 @@ describe('animated movement', () => {
     expect(session.game?.completed).toBe(false);
     await advance(65);
     expect(session.game?.completed).toBe(true);
+    expect(session.reaction.phase).toBe('win');
     expect(session.game?.player).toEqual({ row: 1, column: 3 });
     expect(session.isAnimating).toBe(false);
     expect(frames.size).toBe(0);
@@ -149,6 +152,18 @@ describe('animated movement', () => {
     await finishMove();
     expect(session.game?.map).toEqual(firstStage.map);
     expect(session.game?.player).toEqual(firstStage.playerStart);
+    expect(frames.size).toBe(0);
+  });
+
+  it('replays feedback for repeated blocked commands with reduced motion', async () => {
+    vi.mocked(window.matchMedia).mockReturnValue({ matches: true } as MediaQueryList);
+    const initial = session.game;
+    await act(() => session.move('up'));
+    expect(session.reaction).toMatchObject({ phase: 'blocked', direction: 'up' });
+    const firstAttempt = session.reaction.sequence;
+    await act(() => session.move('up'));
+    expect(session.reaction.sequence).toBeGreaterThan(firstAttempt);
+    expect(session.game).toBe(initial);
     expect(frames.size).toBe(0);
   });
 
