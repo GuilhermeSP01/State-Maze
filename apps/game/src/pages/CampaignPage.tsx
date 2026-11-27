@@ -13,6 +13,15 @@ type WorldEntry = Awaited<ReturnType<typeof loadWorldCatalog>>[number];
 const stagesPerSet = 15;
 const slotsPerSet = stagesPerSet + 1;
 
+function BossIcon() {
+  return (
+    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 9 4 3l5 3h6l5-3-2 6 2 4v3l-4 2-1 3H9l-1-3-4-2v-3l2-4Z" />
+      <path d="m8 12 2 1m6-1-2 1m-2 5v3" />
+    </svg>
+  );
+}
+
 function CampaignWorld({ world, stages }: WorldEntry) {
   const { t, i18n } = useTranslation();
   const carousel = useRef<HTMLDivElement>(null);
@@ -53,8 +62,7 @@ function CampaignWorld({ world, stages }: WorldEntry) {
           const offset = (setNumber - 1) * slotsPerSet;
           const boss = byNumber.get(offset + slotsPerSet);
           return (
-            <section className="campaign-set" key={setNumber} aria-labelledby={`world-${world.id}-set-${setNumber}`}>
-              <h3 id={`world-${world.id}-set-${setNumber}`}>{t('campaign.set', { number: setNumber })}</h3>
+            <section className="campaign-set" key={setNumber} aria-label={t('campaign.set', { number: setNumber })}>
               <nav className="stage-list" aria-label={t('stage.list')}>
                 {Array.from({ length: stagesPerSet }, (_, index) => {
                   const number = index + 1;
@@ -73,11 +81,14 @@ function CampaignWorld({ world, stages }: WorldEntry) {
                 })}
               </nav>
               {boss ? (
-                <Link className="game-control menu-primary campaign-boss" id={`catalog-stage-${boss.id}`} to={`/stage/${boss.id}`}>
-                  {t('campaign.boss')}
+                <Link className="game-control menu-primary campaign-boss" id={`catalog-stage-${boss.id}`}
+                  to={`/stage/${boss.id}`} aria-label={t('campaign.boss')}>
+                  <BossIcon />
                 </Link>
               ) : (
-                <button type="button" className="game-control campaign-boss" disabled>{t('campaign.boss')}</button>
+                <button type="button" className="game-control campaign-boss" aria-label={t('campaign.boss')} disabled>
+                  <BossIcon />
+                </button>
               )}
             </section>
           );

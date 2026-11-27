@@ -148,13 +148,6 @@ select {
   scroll-snap-align: start;
 }
 
-.campaign-set h3 {
-  margin: 0 0 10px;
-  color: var(--menu-muted);
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
 .stage-list {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
