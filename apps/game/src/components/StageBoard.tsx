@@ -2,6 +2,7 @@ import type { Ref } from 'react';
 import type { Position } from '@state-maze/stages';
 import type { Direction, GameState } from '@state-maze/game-core';
 import { useTranslation } from 'react-i18next';
+import type { PlayerReaction } from '../hooks/useAnimatedGame';
 import { usePlayerControls } from '../hooks/usePlayerControls';
 import BoardLighting, { type LightingOptions } from './BoardLighting';
 import './StageBoard.css';
@@ -18,13 +19,14 @@ type StageBoardProps = {
   game: GameState;
   visualPosition: Position;
   isAnimating: boolean;
+  reaction: PlayerReaction;
   onMove: (direction: Direction) => void;
   disabled: boolean;
   lighting: LightingOptions;
 };
 
 export default function StageBoard({
-  ref, stageNumber, game, visualPosition, isAnimating, onMove, disabled, lighting,
+  ref, stageNumber, game, visualPosition, isAnimating, reaction, onMove, disabled, lighting,
 }: StageBoardProps) {
   const { t } = useTranslation();
   const inputHandlers = usePlayerControls(onMove, !disabled);
@@ -69,7 +71,17 @@ export default function StageBoard({
           left: `${((visualPosition.column + 0.5) / game.map[0].length) * 100}%`,
           top: `${((visualPosition.row + 0.5) / game.map.length) * 100}%`,
         }}
-      />
+      >
+        <span
+          key={reaction.sequence}
+          className="player-body"
+          data-phase={reaction.phase}
+          data-direction={reaction.direction}
+          data-lit={game.map[game.player.row][game.player.column] === 1}
+        >
+          <span className="player-eyes" data-gaze={reaction.gaze} />
+        </span>
+      </span>
     </div>
   );
 }

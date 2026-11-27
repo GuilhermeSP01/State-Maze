@@ -5,6 +5,15 @@ import type { Position, StageDefinition, Tile } from '@state-maze/stages';
 
 const millisecondsPerTile = 65;
 
+export type PlayerReaction = {
+  phase: 'idle' | 'slide' | 'impact' | 'blocked' | 'win';
+  direction: Direction;
+  gaze: Direction;
+  sequence: number;
+};
+
+const idle: PlayerReaction = { phase: 'idle', direction: 'down', gaze: 'down', sequence: 0 };
+
 type View = {
   game: GameState | null;
   visualPosition: Position | null;
@@ -13,6 +22,7 @@ type View = {
 
 export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
   const [view, setView] = useState<View>({ game: null, visualPosition: null, isAnimating: false });
+  const [reaction, setReaction] = useState(idle);
   const currentGame = useRef<GameState | null>(null);
   const frame = useRef<number | null>(null);
   const moving = useRef(false);
@@ -21,7 +31,10 @@ export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
 
   useLayoutEffect(() => {
     inputEnabled.current = enabled;
-    if (!enabled) pendingDirection.current = null;
+    if (!enabled && pendingDirection.current) {
+      pendingDirection.current = null;
+      setReaction(previous => ({ ...previous, gaze: previous.direction }));
+    }
   }, [enabled]);
 
   const cancel = useCallback(() => {
@@ -33,6 +46,7 @@ export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
 
   const restart = useCallback(() => {
     cancel();
+    setReaction(idle);
     const game = stage ? createGameState(stage) : null;
     currentGame.current = game;
     setView({ game, visualPosition: game?.player ?? null, isAnimating: false });
@@ -48,13 +62,29 @@ export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
     if (!initial || !inputEnabled.current || initial.completed) return;
     if (moving.current) {
       pendingDirection.current = direction;
+      setReaction(previous => ({ ...previous, gaze: direction }));
       return;
     }
     const started = performance.now();
     const plan = planMove(initial, direction);
+    setReaction(previous => ({
+      phase: plan.path.length ? 'slide' : 'blocked',
+      direction,
+      gaze: direction,
+      sequence: previous.sequence + 1,
+    }));
     if (!plan.path.length) return;
 
+    function land() {
+      setReaction(previous => ({
+        ...previous,
+        phase: plan.state.completed ? 'win' : 'impact',
+        gaze: direction,
+      }));
+    }
+
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      land();
       currentGame.current = plan.state;
       setView({ game: plan.state, visualPosition: plan.state.player, isAnimating: false });
       return;
@@ -84,6 +114,7 @@ export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
       if (reached === plan.path.length) {
         frame.current = null;
         moving.current = false;
+        land();
         currentGame.current = plan.state;
         setView({ game: plan.state, visualPosition: plan.state.player, isAnimating: false });
         const buffered = pendingDirection.current;
@@ -109,5 +140,5 @@ export function useAnimatedGame(stage: StageDefinition | null, enabled = true) {
     frame.current = requestAnimationFrame(tick);
   }, []);
 
-  return { ...view, move, restart };
+  return { ...view, reaction, move, restart };
 }
