@@ -1,0 +1,555 @@
+<style>
+#sm-direct {
+  color-scheme: dark;
+  --canvas: #181b18;
+  --panel: #232722;
+  --raised: #292d27;
+  --ink: #fbf3e4;
+  --quiet: #c2c4b7;
+  --edge: #454a41;
+  --amber: #f5ce6d;
+  --amber-ink: #231c11;
+  --wall: #323831;
+  --stone: #a0a69a;
+  color: var(--ink);
+  font: 15px/1.45 system-ui, sans-serif;
+}
+#sm-direct *, #sm-direct *::before, #sm-direct *::after { box-sizing: border-box }
+#sm-direct [hidden] { display: none !important }
+#sm-direct h1, #sm-direct h2, #sm-direct p { margin: 0 }
+#sm-direct .shell {
+  background: var(--canvas);
+  border-radius: 18px;
+  padding: clamp(16px, 4vw, 30px);
+  min-height: 440px;
+}
+#sm-direct .bar, #sm-direct .section-bar, #sm-direct .stage-header, #sm-direct .setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#sm-direct .brand { display: flex; gap: 9px; align-items: center; font-size: 14px; font-weight: 740 }
+#sm-direct .mark {
+  color: var(--amber);
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ad9254;
+  border-radius: 6px;
+  font-size: 12px;
+}
+#sm-direct button, #sm-direct select { font: inherit }
+#sm-direct button, #sm-direct .select {
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  background: var(--panel);
+  color: var(--ink);
+  padding: 9px 13px;
+  min-height: 44px;
+}
+#sm-direct button { font-size: 14px; font-weight: 650 }
+#sm-direct .quiet-button { background: transparent; color: var(--quiet) }
+#sm-direct .primary {
+  border-color: var(--amber);
+  background: var(--amber);
+  color: var(--amber-ink);
+  font-weight: 780;
+}
+#sm-direct button:disabled { opacity: .5 }
+#sm-direct :focus-visible { outline: 2px solid #c8e4ff; outline-offset: 3px }
+#sm-direct [data-pause] { min-width: 46px; font-size: 16px }
+#sm-direct .split-action { display: flex; justify-content: space-between; align-items: center; gap: 10px }
+#sm-direct .hero-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+  align-items: center;
+  gap: clamp(18px, 5vw, 42px);
+  padding-block: 27px 12px;
+}
+#sm-direct .hero-copy h1 {
+  font-size: clamp(55px, 10vw, 80px);
+  font-weight: 830;
+  line-height: .86;
+  letter-spacing: -.09em;
+}
+#sm-direct .hero-copy h1 span { color: var(--amber) }
+#sm-direct .tagline { color: var(--quiet); margin-top: 14px }
+#sm-direct .hero-actions {
+  max-width: 330px;
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+#sm-direct .secondary-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+#sm-direct .secondary-actions button { width: 100% }
+#sm-direct .hero-art {
+  display: grid;
+  place-items: center;
+  min-height: 245px;
+  background: radial-gradient(ellipse at center, #5f4e2d72, transparent 67%);
+}
+#sm-direct .maze {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 3px;
+  width: 100%;
+}
+#sm-direct .hero-art .maze {
+  width: min(88%, 286px);
+  transform: rotate(-9deg);
+  filter: drop-shadow(0 13px 8px #0008);
+}
+#sm-direct .tile {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  border-radius: 4px;
+  background: var(--wall);
+  box-shadow: inset 0 1px #ffffff13, inset 0 -2px #0003;
+}
+#sm-direct .tile[data-tile="0"] { background: var(--stone) }
+#sm-direct .tile[data-tile="1"] { background: var(--amber) }
+#sm-direct[data-bloom="true"] :is(.hero-art, .playfield) .tile[data-tile="1"] {
+  box-shadow: inset 0 1px #ffffff8c, 0 0 10px #f5ce6d45;
+}
+#sm-direct[data-penumbra="true"] .playfield .tile[data-tile="2"] {
+  box-shadow: inset 0 2px #ffffff13, inset 0 -5px 8px #0005;
+}
+#sm-direct .pawn {
+  width: 65%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 37% 28%, #526477, #273545 65%);
+  box-shadow: inset 0 -2px #8593a6, 0 2px 4px #15191591;
+  display: flex;
+  justify-content: center;
+  gap: 12%;
+  align-items: center;
+}
+#sm-direct .pawn::before, #sm-direct .pawn::after {
+  content: "";
+  width: 15%;
+  height: 23%;
+  border-radius: 50%;
+  background: #fff9e9;
+}
+#sm-direct .page { padding-top: 27px }
+#sm-direct .page-title {
+  font-size: clamp(36px, 7vw, 56px);
+  line-height: 1;
+  font-weight: 790;
+  letter-spacing: -.065em;
+}
+#sm-direct .world { margin-top: 24px; border-top: 1px solid var(--edge); padding-top: 16px }
+#sm-direct .world h2 { font-size: 20px; letter-spacing: -.03em }
+#sm-direct .meta { color: var(--quiet); font-size: 13px }
+#sm-direct .stages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px }
+#sm-direct .stage-card { display: grid; text-align: left; gap: 8px; padding: 10px; min-width: 0 }
+#sm-direct .stage-card .maze { max-width: 96px; gap: 2px; align-self: center; justify-self: center }
+#sm-direct .stage-card .tile { border-radius: 2px; box-shadow: none }
+#sm-direct .stage-number { font-size: 18px; line-height: 1 }
+#sm-direct .stage-card:first-child .stage-number { color: var(--amber) }
+#sm-direct .upcoming { display: grid; justify-items: start; gap: 18px }
+#sm-direct .settings { display: grid; gap: 10px; margin-top: 20px; max-width: 470px }
+#sm-direct .setting, #sm-direct fieldset { border: 1px solid var(--edge); border-radius: 10px; background: var(--panel); padding: 9px 12px }
+#sm-direct fieldset { display: grid; gap: 0; min-width: 0; margin: 0 }
+#sm-direct legend { color: var(--quiet); font-size: 13px; padding: 0 6px }
+#sm-direct fieldset .setting { border: 0; padding: 4px 0; min-height: 43px }
+#sm-direct fieldset .setting + .setting { border-top: 1px solid var(--edge); border-radius: 0 }
+#sm-direct input[type="checkbox"] { accent-color: var(--amber); width: 19px; height: 19px; margin: 0 }
+#sm-direct .select { background: var(--canvas); padding: 7px; max-width: 100% }
+#sm-direct .play { max-width: 408px; margin-inline: auto }
+#sm-direct .playfield { background: #141713; padding: 7px; border-radius: 10px; touch-action: none; margin-top: 12px }
+#sm-direct .completion { display: grid; gap: 10px; margin-top: 14px }
+#sm-direct .completion h2 { font-size: 20px }
+#sm-direct .pause {
+  width: min(340px, calc(100% - 32px));
+  max-height: calc(100% - 24px);
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  padding: 17px;
+  color: var(--ink);
+  background: var(--raised);
+}
+#sm-direct .pause[open] { display: grid; gap: 10px }
+#sm-direct .pause::backdrop { background: #10130fba }
+#sm-direct .pause h2 { font-size: 24px; letter-spacing: -.03em }
+#sm-direct .pause .settings { margin: 0 }
+@media (hover: hover) {
+  #sm-direct button:not(:disabled):hover { border-color: #af9c70; background: var(--raised) }
+  #sm-direct button.primary:not(:disabled):hover { background: #ffe099 }
+}
+@media (max-width: 510px) {
+  #sm-direct .shell { min-height: 0 }
+  #sm-direct .hero-layout { grid-template-columns: 1fr; gap: 2px; padding-block: 8px 0 }
+  #sm-direct .hero-art { grid-row: 1; min-height: 174px }
+  #sm-direct .hero-art .maze { width: min(70%, 207px) }
+  #sm-direct .hero-copy { text-align: center }
+  #sm-direct .hero-copy h1 { font-size: clamp(50px, 13vw, 65px) }
+  #sm-direct .hero-actions { margin: 20px auto 0 }
+  #sm-direct .stages { gap: 6px }
+  #sm-direct .stage-card { padding: 7px }
+  #sm-direct .setting { flex-wrap: wrap }
+  #sm-direct select { font-size: 16px }
+}
+</style>
+
+<div id="sm-direct" lang="pt-BR" aria-label="State Maze · Entrada direta" data-bloom="true" data-penumbra="true">
+  <div class="shell">
+    <section data-screen="home" aria-labelledby="smd-home">
+      <header class="bar">
+        <span class="mark" aria-hidden="true">◆</span>
+        <button type="button" class="quiet-button cursor-interaction" data-go="settings" data-text="menu.settings">Configurações</button>
+      </header>
+      <div class="hero-layout">
+        <div class="hero-copy">
+          <h1 id="smd-home">State<br><span>Maze</span></h1>
+          <p class="tagline" data-text="tagline">Deslize e altere o piso.</p>
+          <nav class="hero-actions" aria-label="Modos de jogo">
+            <button type="button" class="primary split-action cursor-interaction" data-go="campaign">
+              <span data-text="menu.playCampaign">Jogar Campanha</span><span aria-hidden="true">→</span>
+            </button>
+            <div class="secondary-actions">
+              <button type="button" class="cursor-interaction" data-go="flow" data-text="menu.flow">Fluxo</button>
+              <button type="button" class="cursor-interaction" data-go="challenge" data-text="menu.challenge">Desafio</button>
+            </div>
+          </nav>
+        </div>
+        <div class="hero-art" aria-hidden="true"><div class="maze" data-hero-map></div></div>
+      </div>
+    </section>
+
+    <section data-screen="campaign" aria-labelledby="smd-campaign" hidden>
+      <header class="bar">
+        <button type="button" class="quiet-button cursor-interaction" data-go="home" data-back="menu.back">← Voltar aos modos</button>
+        <span class="brand"><span class="mark" aria-hidden="true">◆</span> State Maze</span>
+      </header>
+      <div class="page">
+        <h1 id="smd-campaign" class="page-title" data-text="menu.campaign">Campanha</h1>
+        <section class="world" aria-labelledby="smd-world">
+          <header class="section-bar"><h2 id="smd-world" data-world>Tutorial</h2><p class="meta" data-count>3 fases</p></header>
+          <nav class="stages" aria-label="Fases" data-stages></nav>
+        </section>
+      </div>
+    </section>
+
+    <section data-screen="settings" aria-labelledby="smd-settings" hidden>
+      <header class="bar">
+        <button type="button" class="quiet-button cursor-interaction" data-go="home" data-back="menu.back">← Voltar aos modos</button>
+        <span class="brand"><span class="mark" aria-hidden="true">◆</span> State Maze</span>
+      </header>
+      <div class="page">
+        <h1 id="smd-settings" class="page-title" data-text="menu.settings">Configurações</h1>
+        <div data-settings></div>
+      </div>
+    </section>
+
+    <section data-screen="upcoming" aria-labelledby="smd-mode" hidden>
+      <header class="bar">
+        <button type="button" class="quiet-button cursor-interaction" data-go="home" data-back="menu.back">← Voltar aos modos</button>
+        <span class="brand"><span class="mark" aria-hidden="true">◆</span> State Maze</span>
+      </header>
+      <div class="page upcoming">
+        <h1 id="smd-mode" class="page-title">Fluxo</h1>
+        <p class="meta" data-text="menu.upcomingDescription">Este modo estará disponível em uma próxima atualização.</p>
+        <button type="button" class="primary split-action cursor-interaction" data-go="campaign">
+          <span data-text="menu.playCampaign">Jogar Campanha</span><span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="play" data-screen="stage" aria-labelledby="smd-stage" hidden>
+      <header class="stage-header">
+        <div><p class="meta" data-world>Tutorial</p><h1 id="smd-stage">Fase 1</h1></div>
+        <button type="button" class="quiet-button cursor-interaction" data-pause aria-label="Pausar" aria-haspopup="dialog"><span aria-hidden="true">Ⅱ</span></button>
+      </header>
+      <div class="playfield" tabindex="0" data-playfield aria-label="Mapa da fase 1">
+        <div class="maze" data-play-map aria-hidden="true"></div>
+      </div>
+      <p class="meta" data-hint data-text="controls" style="margin-top: 10px">Use as setas ou deslize no tabuleiro.</p>
+      <div class="completion" data-completion hidden>
+        <h2 data-text="stage.completed" role="status">Fase concluída!</h2>
+        <button type="button" class="primary cursor-interaction" data-next data-text="stage.next">Próxima fase</button>
+        <div class="secondary-actions">
+          <button type="button" class="cursor-interaction" data-go="campaign" data-text="navigation.backToStages">Voltar às fases</button>
+          <button type="button" class="cursor-interaction" data-restart data-text="stage.replay">Jogar de novo</button>
+        </div>
+      </div>
+    </section>
+
+    <dialog class="pause" aria-labelledby="smd-pause">
+      <h2 id="smd-pause" data-pause-title>Em pausa</h2>
+      <div data-settings data-pause-settings hidden></div>
+      <div data-pause-actions class="completion" style="margin-top: 0">
+        <button type="button" class="primary cursor-interaction" data-resume data-text="stage.resume">Retomar</button>
+        <button type="button" class="cursor-interaction" data-restart data-text="stage.restart">Reiniciar</button>
+      </div>
+      <button type="button" class="cursor-interaction" data-settings-toggle>Configurações</button>
+      <button type="button" class="quiet-button cursor-interaction" data-pause-back data-go="campaign" data-text="navigation.backToStages">Voltar às fases</button>
+    </dialog>
+
+    <template data-settings-template>
+      <div class="settings">
+        <label class="setting">
+          <span data-text="language.label">Idioma</span>
+          <select class="select cursor-interaction" data-lang>
+            <option value="pt-BR" lang="pt-BR">Português (Brasil)</option><option value="en" lang="en">English</option>
+          </select>
+        </label>
+        <fieldset>
+          <legend data-text="stage.lighting">Iluminação</legend>
+          <label class="setting cursor-interaction"><span data-text="stage.penumbra">Penumbra</span><input type="checkbox" data-light="penumbra" checked></label>
+          <label class="setting cursor-interaction"><span data-text="stage.bloom">Bloom</span><input type="checkbox" data-light="bloom" checked></label>
+        </fieldset>
+      </div>
+    </template>
+  </div>
+</div>
+
+<script type="application/json" id="smd-repository-data">{"stages":[{"schemaVersion":2,"id":"88d74bf2-d913-4fbd-8244-8a0234d6318c","worldId":"2af1c8bc-7332-4a4b-b74f-24f53be7fd3f","number":1,"map":[[2,2,2,2,2],[2,1,0,0,2],[2,2,2,2,2]],"playerStart":{"row":1,"column":1}},{"schemaVersion":2,"id":"890573bc-397d-49a1-b5ec-972b8cd0116c","worldId":"2af1c8bc-7332-4a4b-b74f-24f53be7fd3f","number":2,"map":[[2,2,2,2,2],[2,0,0,0,2],[2,0,2,0,2],[2,0,0,0,2],[2,2,2,2,2]],"playerStart":{"row":1,"column":1}},{"schemaVersion":2,"id":"e48f718a-6381-455c-9434-cdf69d72ba46","worldId":"2af1c8bc-7332-4a4b-b74f-24f53be7fd3f","number":3,"map":[[2,2,2,2,2,2,2],[2,1,1,1,1,0,2],[2,0,2,2,2,1,2],[2,0,0,0,0,1,2],[2,2,2,2,2,2,2]],"playerStart":{"row":1,"column":1}}],"world":{"schemaVersion":1,"id":"2af1c8bc-7332-4a4b-b74f-24f53be7fd3f","title":{"en":"Tutorial","pt-BR":"Tutorial"}},"messages":{"pt-BR":{"language":{"label":"Idioma"},"navigation":{"backToStages":"Voltar às fases"},"world":{"loading":"Carregando mundos…","loadError":"Não foi possível carregar os mundos."},"stage":{"completed":"Fase concluída!","next":"Próxima fase","replay":"Jogar de novo","restart":"Reiniciar","heading":"Fase","list":"Fases","title":"Fase {{number}}","lighting":"Iluminação","penumbra":"Penumbra","bloom":"Bloom","pause":"Pausar","paused":"Em pausa","resume":"Retomar","loading":"Carregando fase…","notFound":"Fase não encontrada.","loadError":"Não foi possível carregar a fase."},"board":{"label":"Mapa da fase {{number}}","floorOff":"Piso em estado 0","floorOff_player":"Piso em estado 0, jogador","floorOn":"Piso em estado 1","floorOn_player":"Piso em estado 1, jogador","wall":"Parede","wall_player":"Parede, jogador"},"menu":{"back":"Voltar aos modos","backToPause":"Voltar ao menu de pausa","settings":"Configurações","choose":"Escolha seu modo de jogo.","campaign":"Campanha","flow":"Fluxo","challenge":"Desafio","upcomingDescription":"Este modo estará disponível em uma próxima atualização.","playCampaign":"Jogar Campanha"}},"en":{"language":{"label":"Language"},"navigation":{"backToStages":"Back to stages"},"world":{"loading":"Loading worlds…","loadError":"Could not load the worlds."},"stage":{"completed":"Stage completed!","next":"Next stage","replay":"Play again","restart":"Restart","heading":"Stage","list":"Stages","title":"Stage {{number}}","lighting":"Lighting","penumbra":"Soft shadows","bloom":"Bloom","pause":"Pause","paused":"Paused","resume":"Resume","loading":"Loading stage…","notFound":"Stage not found.","loadError":"Could not load the stage."},"board":{"label":"Stage {{number}} map","floorOff":"Floor in state 0","floorOff_player":"Floor in state 0, player","floorOn":"Floor in state 1","floorOn_player":"Floor in state 1, player","wall":"Wall","wall_player":"Wall, player"},"menu":{"back":"Back to modes","backToPause":"Back to pause menu","settings":"Settings","choose":"Choose your game mode.","campaign":"Campaign","flow":"Flow","challenge":"Challenge","upcomingDescription":"This mode will be available in a future update.","playCampaign":"Play Campaign"}}}}</script>
+<script>
+(() => {
+  const offsets                              = {
+    up: { row: -1, column: 0 },
+    down: { row: 1, column: 0 },
+    left: { row: 0, column: -1 },
+    right: { row: 0, column: 1 },
+  };
+
+  function createGameState(stage                 )            {
+    return {
+      map: stage.map.map((row) => [...row]),
+      player: { ...stage.playerStart },
+      completed: false,
+    };
+  }
+
+
+
+
+
+
+
+  function movePlayer(state           , direction           )            {
+    return planMove(state, direction).state;
+  }
+
+  function planMove(state           , direction           )           {
+    if (state.completed) return { state, path: [] };
+
+    const offset = offsets[direction];
+    let { row, column } = state.player;
+    let map                      ;
+    const path             = [];
+
+    while (true) {
+      const nextRow = row + offset.row;
+      const nextColumn = column + offset.column;
+      const tile = state.map[nextRow]?.[nextColumn];
+      if (tile === undefined || tile === 2) break;
+
+      map ??= state.map.map((tiles) => [...tiles]);
+      map[nextRow][nextColumn] = tile === 0 ? 1 : 0;
+      row = nextRow;
+      column = nextColumn;
+      path.push({ row, column });
+    }
+
+    if (!map) return { state, path };
+
+    return {
+      path,
+      state: {
+        map,
+        player: { row, column },
+        completed: map.every((tiles) => tiles.every((tile) => tile === 1 || tile === 2)),
+      },
+    };
+  }
+
+  const root = document.getElementById('sm-direct');
+  const find = selector => root.querySelector(selector);
+  const all = selector => [...root.querySelectorAll(selector)];
+  const { messages, stages, world } = JSON.parse(document.getElementById('smd-repository-data').textContent);
+  const copy = {
+    'pt-BR': { tagline: 'Deslize e altere o piso.', controls: 'Use as setas ou deslize no tabuleiro.', count: '3 fases', modes: 'Modos de jogo' },
+    en: { tagline: 'Slide and toggle the tiles.', controls: 'Use the arrow keys or swipe the board.', count: '3 stages', modes: 'Game modes' },
+  };
+  const state = { screen: 'home', mode: 'flow', stage: 0, language: 'pt-BR', pauseSettings: false, game: null };
+  const dialog = find('dialog');
+  const playfield = find('[data-playfield]');
+  const stageList = find('[data-stages]');
+  const settingsTemplate = find('[data-settings-template]');
+  all('[data-settings]').forEach(panel => panel.append(settingsTemplate.content.cloneNode(true)));
+
+  function t(key) {
+    return copy[state.language][key] ?? key.split('.').reduce((value, part) => value[part], messages[state.language]);
+  }
+
+  function stageTitle(index) {
+    return t('stage.title').replace('{{number}}', stages[index].number);
+  }
+
+  function draw(board, map, player = null) {
+    const cells = document.createDocumentFragment();
+    board.style.setProperty('--cols', map[0].length);
+    map.forEach((row, y) => row.forEach((value, x) => {
+      const tile = document.createElement('span');
+      tile.className = 'tile';
+      tile.dataset.tile = value;
+      if (player?.row === y && player.column === x) {
+        const pawn = document.createElement('span');
+        pawn.className = 'pawn';
+        tile.append(pawn);
+      }
+      cells.append(tile);
+    }));
+    board.replaceChildren(cells);
+  }
+
+  stages.forEach((stage, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'stage-card cursor-interaction';
+
+    const maze = document.createElement('span');
+    maze.className = 'maze';
+    maze.setAttribute('aria-hidden', 'true');
+    draw(maze, stage.map, stage.playerStart);
+
+    const number = document.createElement('span');
+    number.className = 'stage-number';
+    number.textContent = String(stage.number);
+    button.append(maze, number);
+    button.addEventListener('click', () => start(index));
+    stageList.append(button);
+  });
+  const hero = stages[stages.length - 1];
+  draw(find('[data-hero-map]'), hero.map, hero.playerStart);
+
+  function renderPause() {
+    find('[data-pause-title]').textContent = t(state.pauseSettings ? 'menu.settings' : 'stage.paused');
+    find('[data-settings-toggle]').textContent = t(state.pauseSettings ? 'menu.backToPause' : 'menu.settings');
+    find('[data-pause-actions]').hidden = state.pauseSettings;
+    find('[data-pause-settings]').hidden = !state.pauseSettings;
+    find('[data-pause-back]').hidden = state.pauseSettings;
+  }
+
+  function renderLabels() {
+    root.lang = state.language;
+    all('[data-text]').forEach(element => { element.textContent = t(element.dataset.text); });
+    all('[data-back]').forEach(element => { element.textContent = '← ' + t(element.dataset.back); });
+    all('[data-world]').forEach(element => { element.textContent = world.title[state.language]; });
+    all('[data-lang]').forEach(select => { select.value = state.language; });
+    find('[data-count]').textContent = t('count');
+    find('.hero-actions').setAttribute('aria-label', t('modes'));
+    stageList.setAttribute('aria-label', t('stage.list'));
+    [...stageList.children].forEach((button, index) => button.setAttribute('aria-label', stageTitle(index)));
+    find('#smd-mode').textContent = t('menu.' + state.mode);
+    find('#smd-stage').textContent = stageTitle(state.stage);
+    find('[data-pause]').setAttribute('aria-label', t('stage.pause'));
+    playfield.setAttribute('aria-label', t('board.label').replace('{{number}}', stages[state.stage].number));
+    renderPause();
+  }
+
+  function renderBoard() {
+    draw(find('[data-play-map]'), state.game.map, state.game.player);
+    const { completed } = state.game;
+    find('[data-pause]').hidden = completed;
+    find('[data-completion]').hidden = !completed;
+    find('[data-hint]').hidden = completed;
+    find('[data-next]').disabled = state.stage === stages.length - 1;
+  }
+
+  function navigate(destination, moveFocus = true) {
+    if (dialog.open) dialog.close();
+    state.pauseSettings = false;
+    if (destination === 'flow' || destination === 'challenge') {
+      state.mode = destination;
+      destination = 'upcoming';
+    }
+    state.screen = destination;
+    all('[data-screen]').forEach(section => { section.hidden = section.dataset.screen !== destination; });
+    renderLabels();
+    if (moveFocus) {
+      const screen = find('[data-screen="' + destination + '"]');
+      const target = destination === 'stage' ? playfield : screen.querySelector('h1');
+      if (target !== playfield) target.setAttribute('tabindex', '-1');
+      target.focus({ preventScroll: true });
+    }
+  }
+
+  function start(index) {
+    state.stage = index;
+    state.game = createGameState(stages[index]);
+    renderBoard();
+    navigate('stage');
+  }
+
+  function slide(direction) {
+    if (state.screen !== 'stage' || dialog.open || state.game.completed) return;
+    const next = movePlayer(state.game, direction);
+    if (next === state.game) return;
+    state.game = next;
+    renderBoard();
+    if (next.completed) find('[data-next]:not(:disabled), [data-completion] [data-go]').focus({ preventScroll: true });
+  }
+
+  all('[data-go]').forEach(button => button.addEventListener('click', () => navigate(button.dataset.go)));
+  all('[data-restart]').forEach(button => button.addEventListener('click', () => start(state.stage)));
+  find('[data-next]').addEventListener('click', () => start(state.stage + 1));
+  find('[data-pause]').addEventListener('click', () => { dialog.showModal(); find('[data-resume]').focus(); });
+  find('[data-resume]').addEventListener('click', () => dialog.close());
+  find('[data-settings-toggle]').addEventListener('click', () => {
+    state.pauseSettings = !state.pauseSettings;
+    renderPause();
+    if (state.pauseSettings) find('[data-pause-settings] select').focus();
+  });
+  dialog.addEventListener('cancel', event => {
+    if (!state.pauseSettings) return;
+    event.preventDefault();
+    state.pauseSettings = false;
+    renderPause();
+    find('[data-settings-toggle]').focus();
+  });
+  all('[data-lang]').forEach(select => select.addEventListener('change', () => {
+    state.language = select.value;
+    renderLabels();
+  }));
+  all('[data-light]').forEach(input => input.addEventListener('change', () => {
+    root.dataset[input.dataset.light] = String(input.checked);
+    all('[data-light]').forEach(option => {
+      option.checked = root.dataset[option.dataset.light] === 'true';
+    });
+  }));
+
+  const keyDirection = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+  playfield.addEventListener('keydown', event => {
+    const direction = keyDirection[event.key];
+    if (!direction) return;
+    event.preventDefault();
+    if (!event.repeat) slide(direction);
+  });
+
+  let pointer;
+  playfield.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0 || state.game.completed) return;
+    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    playfield.setPointerCapture(event.pointerId);
+  });
+  playfield.addEventListener('pointercancel', () => { pointer = null; });
+  playfield.addEventListener('pointerup', event => {
+    if (pointer?.id !== event.pointerId) return;
+    const dx = event.clientX - pointer.x;
+    const dy = event.clientY - pointer.y;
+    pointer = null;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24 || Math.abs(dx) === Math.abs(dy)) return;
+    slide(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
+  });
+
+  navigate('home', false);
+})();
+</script>
