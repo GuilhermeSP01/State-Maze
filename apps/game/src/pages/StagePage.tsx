@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import type { StageDefinition, WorldDefinition } from '@state-maze/stages';
 import { useAnimatedGame } from '../hooks/useAnimatedGame';
-import type { LightingOptions } from '../components/BoardLighting';
+import SettingsPanel from '../components/SettingsPanel';
+import { useLighting } from '../components/LightingPreferences';
 import StageBoard from '../components/StageBoard';
 import { getWorldStages, listStages, loadStage } from '../stages/loadStage';
 import { loadWorld } from '../worlds/loadWorld';
@@ -22,32 +23,11 @@ export default function StagePage() {
   return <StageContent key={stageId} stageId={stageId} />;
 }
 
-const lightingKey = 'state-maze.lighting';
-
-function loadLighting(): LightingOptions {
-  let saved;
-  try {
-    saved = JSON.parse(localStorage.getItem(lightingKey) ?? '{}');
-  } catch {
-    // Storage can be unavailable in a restricted webview.
-  }
-  return { penumbra: saved?.penumbra !== false, bloom: saved?.bloom !== false };
-}
-
 function StageContent({ stageId }: { stageId: string }) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const [lighting, setLighting] = useState(loadLighting);
-  function changeLighting(option: keyof LightingOptions, enabled: boolean) {
-    const updated = { ...lighting, [option]: enabled };
-    setLighting(updated);
-    try {
-      localStorage.setItem(lightingKey, JSON.stringify(updated));
-    } catch {
-      // The choice still applies to the current stage.
-    }
-  }
-
+  const { lighting } = useLighting();
+  const [showSettings, setShowSettings] = useState(false);
   const [paused, setPaused] = useState(false);
   const [state, setState] = useState<StageLoadState>({ status: 'loading' });
   const boardRef = useRef<HTMLDivElement>(null);
@@ -123,7 +103,7 @@ function StageContent({ stageId }: { stageId: string }) {
     if (state.status === 'ready' && state.nextStageId) navigate(`/stage/${state.nextStageId}`);
   }
 
-  const catalogLink = <Link className="game-control" to="/" state={{ returnStageId: stageId }}>
+  const catalogLink = <Link className="game-control" to="/campaign" state={{ returnStageId: stageId }}>
     {t('navigation.backToStages')}
   </Link>;
 
@@ -161,10 +141,6 @@ function StageContent({ stageId }: { stageId: string }) {
       </header>
       {game && visualPosition && (
         <>
-          <p id="stage-goal" className="stage-goal">
-            <span className="stage-goal-swatch" aria-hidden="true" />
-            {t('stage.goal')}
-          </p>
           <StageBoard
             ref={boardRef}
             stageNumber={state.stage.number}
@@ -176,7 +152,7 @@ function StageContent({ stageId }: { stageId: string }) {
             lighting={lighting}
             disabled={paused || completed}
           />
-          {completed ? (
+          {completed && (
             <section className="stage-completion" aria-labelledby="completion-title">
               <h2 id="completion-title" ref={completionRef} tabIndex={-1}>{t('stage.completed')}</h2>
               <div className="completion-actions">
@@ -192,11 +168,6 @@ function StageContent({ stageId }: { stageId: string }) {
                 <button type="button" className="game-control" onClick={restart}>{t('stage.replay')}</button>
               </div>
             </section>
-          ) : (
-            <div id="stage-controls" className="stage-controls">
-              <p>{t('stage.controls')}</p>
-              {state.stage.number === 1 && <p>{t('stage.toggleHint')}</p>}
-            </div>
           )}
         </>
       )}
@@ -206,25 +177,25 @@ function StageContent({ stageId }: { stageId: string }) {
         aria-labelledby="pause-title"
         onCancel={(event) => {
           event.preventDefault();
-          resume();
+          if (showSettings) setShowSettings(false);
+          else resume();
         }}
       >
-        <h2 id="pause-title">{t('stage.paused')}</h2>
-        <button ref={resumeButtonRef} type="button" className="game-control game-control-primary" onClick={resume}>
-          {t('stage.resume')}
+        <h2 id="pause-title">{t(showSettings ? 'menu.settings' : 'stage.paused')}</h2>
+        {showSettings ? (
+          <SettingsPanel />
+        ) : (
+          <>
+            <button ref={resumeButtonRef} type="button" className="game-control game-control-primary" onClick={resume}>
+              {t('stage.resume')}
+            </button>
+            <button type="button" className="game-control" onClick={restart}>{t('stage.restart')}</button>
+          </>
+        )}
+        <button type="button" className="game-control" onClick={() => setShowSettings(!showSettings)}>
+          {t(showSettings ? 'menu.backToPause' : 'menu.settings')}
         </button>
-        <button type="button" className="game-control" onClick={restart}>{t('stage.restart')}</button>
-        <fieldset className="lighting-options">
-          <legend>{t('stage.lighting')}</legend>
-          {(['penumbra', 'bloom'] as const).map(option => (
-            <label key={option}>
-              <input type="checkbox" checked={lighting[option]}
-                onChange={event => changeLighting(option, event.target.checked)} />
-              {t(`stage.${option}`)}
-            </label>
-          ))}
-        </fieldset>
-        {catalogLink}
+        {!showSettings && catalogLink}
       </dialog>
     </main>
   );

@@ -1,6 +1,10 @@
 {
-  "language": { "label": "Idioma" },
-  "navigation": { "backToStages": "Voltar às fases" },
+  "language": {
+    "label": "Idioma"
+  },
+  "navigation": {
+    "backToStages": "Voltar às fases"
+  },
   "world": {
     "loading": "Carregando mundos…",
     "loadError": "Não foi possível carregar os mundos."
@@ -10,9 +14,6 @@
     "next": "Próxima fase",
     "replay": "Jogar de novo",
     "restart": "Reiniciar",
-    "goal": "Deixe todas as casas amarelas.",
-    "controls": "Use as setas ou deslize no tabuleiro.",
-    "toggleHint": "Cada casa em que a peça entra alterna entre 0 e 1.",
     "heading": "Fase",
     "list": "Fases",
     "title": "Fase {{number}}",
@@ -34,5 +35,16 @@
     "floorOn_player": "Piso em estado 1, jogador",
     "wall": "Parede",
     "wall_player": "Parede, jogador"
+  },
+  "menu": {
+    "back": "Voltar aos modos",
+    "backToPause": "Voltar ao menu de pausa",
+    "settings": "Configurações",
+    "choose": "Escolha seu modo de jogo.",
+    "campaign": "Campanha",
+    "flow": "Fluxo",
+    "challenge": "Desafio",
+    "upcomingDescription": "Este modo estará disponível em uma próxima atualização.",
+    "playCampaign": "Jogar Campanha"
   }
 }

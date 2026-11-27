@@ -39,7 +39,6 @@ export default function StageBoard({
       tabIndex={disabled ? -1 : 0}
       aria-busy={isAnimating}
       aria-label={t('board.label', { number: stageNumber })}
-      aria-describedby={game.completed ? undefined : 'stage-goal stage-controls'}
       style={{
         gridTemplateColumns: `repeat(${game.map[0].length}, minmax(0, 1fr))`,
       }}

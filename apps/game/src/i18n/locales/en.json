@@ -1,6 +1,10 @@
 {
-  "language": { "label": "Language" },
-  "navigation": { "backToStages": "Back to stages" },
+  "language": {
+    "label": "Language"
+  },
+  "navigation": {
+    "backToStages": "Back to stages"
+  },
   "world": {
     "loading": "Loading worlds…",
     "loadError": "Could not load the worlds."
@@ -10,9 +14,6 @@
     "next": "Next stage",
     "replay": "Play again",
     "restart": "Restart",
-    "goal": "Turn every tile yellow.",
-    "controls": "Use the arrow keys or swipe the board.",
-    "toggleHint": "Each tile the piece enters switches between 0 and 1.",
     "heading": "Stage",
     "list": "Stages",
     "title": "Stage {{number}}",
@@ -34,5 +35,16 @@
     "floorOn_player": "Floor in state 1, player",
     "wall": "Wall",
     "wall_player": "Wall, player"
+  },
+  "menu": {
+    "back": "Back to modes",
+    "backToPause": "Back to pause menu",
+    "settings": "Settings",
+    "choose": "Choose your game mode.",
+    "campaign": "Campaign",
+    "flow": "Flow",
+    "challenge": "Challenge",
+    "upcomingDescription": "This mode will be available in a future update.",
+    "playCampaign": "Play Campaign"
   }
 }

@@ -51,8 +51,11 @@ afterEach(async () => {
 
 describe('stage navigation', () => {
   it('advances on demand, disables the action on the last stage and restores catalog focus', async () => {
+    await click('.mode-campaign');
     await click('.catalog-stage');
-    expect(element('#stage-goal').textContent).toBe('Deixe todas as casas amarelas.');
+    expect(container.textContent).not.toContain('Deixe todas as casas amarelas.');
+    expect(container.textContent).not.toContain('Use as setas ou deslize no tabuleiro.');
+    expect(container.textContent).not.toContain('Cada casa em que a peça entra alterna entre 0 e 1.');
     expect(document.activeElement).toBe(element('.stage-board'));
 
     await play('ArrowRight');
@@ -75,6 +78,7 @@ describe('stage navigation', () => {
   });
 
   it('blocks board commands during pause and returns focus after closing or restarting', async () => {
+    await click('.mode-campaign');
     await click('.catalog-stage');
     await click('.pause-button');
     const dialog = element<HTMLDialogElement>('dialog');
@@ -105,6 +109,7 @@ describe('stage navigation', () => {
 });
 
 it('moves as soon as a swipe is recognized and consumes it once', async () => {
+  await click('.mode-campaign');
   await click('.catalog-stage:nth-of-type(2)');
   const board = element('.stage-board');
   const player = () => element('[aria-label$=", jogador"]');
@@ -142,4 +147,53 @@ it('moves as soon as a swipe is recognized and consumes it once', async () => {
   await swipe('pointerdown', 0, 0);
   await swipe('pointerup', 24, 0);
   expect(player()).toBe(element('.stage-board-row:nth-child(4) .stage-tile:nth-child(4)'));
+});
+
+it('shows modes before stages and opens settings and upcoming modes', async () => {
+  expect(container.querySelector('.catalog-stage')).toBeNull();
+  expect(container.querySelectorAll('.mode-card')).toHaveLength(3);
+  await click('a[href="/settings"]');
+  expect(element<HTMLSelectElement>('select').value).toBe('pt-BR');
+  await click('a[href="/"]');
+  for (const mode of ['flow', 'challenge']) {
+    await click(`a[href="/${mode}"]`);
+    expect(container.textContent).toContain('Este modo estará disponível');
+    await click('a[href="/"]');
+  }
+});
+
+it('shares lighting preferences between the main menu and a paused game', async () => {
+  const checkbox = 'input[type="checkbox"]';
+  await click('a[href="/settings"]');
+  const previous = element<HTMLInputElement>(checkbox).checked;
+  await click(checkbox);
+  await click('a[href="/"]');
+  await click('.mode-campaign');
+  await click('.catalog-stage:nth-of-type(2)');
+  await play('ArrowRight');
+  const board = element('.stage-board');
+  const player = board.querySelector('[aria-label$=", jogador"]');
+  expect(player).not.toBeNull();
+
+  await click('.pause-button');
+  expect(container.querySelector(checkbox)).toBeNull();
+  const settingsButton = Array.from(container.querySelectorAll<HTMLButtonElement>('dialog button'))
+    .find(button => button.textContent === 'Configurações')!;
+  await act(() => settingsButton.click());
+  expect(element<HTMLSelectElement>('dialog select').value).toBe('pt-BR');
+  expect(element<HTMLInputElement>(checkbox).checked).toBe(!previous);
+  await click(checkbox);
+  const dialog = element<HTMLDialogElement>('dialog');
+  await act(() => dialog.dispatchEvent(new Event('cancel', { cancelable: true })));
+  expect(dialog.open).toBe(true);
+  expect(container.querySelector(checkbox)).toBeNull();
+  await click('dialog .game-control-primary');
+  expect(dialog.open).toBe(false);
+  expect(board.querySelector('[aria-label$=", jogador"]')).toBe(player);
+
+  await click('.pause-button');
+  await click('dialog a');
+  await click('a[href="/"]');
+  await click('a[href="/settings"]');
+  expect(element<HTMLInputElement>(checkbox).checked).toBe(previous);
 });
