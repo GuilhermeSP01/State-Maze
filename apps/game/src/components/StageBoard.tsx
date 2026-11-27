@@ -3,6 +3,7 @@ import type { Position } from '@state-maze/stages';
 import type { Direction, GameState } from '@state-maze/game-core';
 import { useTranslation } from 'react-i18next';
 import { usePlayerControls } from '../hooks/usePlayerControls';
+import BoardLighting, { type LightingOptions } from './BoardLighting';
 import './StageBoard.css';
 
 const tileLabels = {
@@ -19,10 +20,11 @@ type StageBoardProps = {
   isAnimating: boolean;
   onMove: (direction: Direction) => void;
   disabled: boolean;
+  lighting: LightingOptions;
 };
 
 export default function StageBoard({
-  ref, stageNumber, game, visualPosition, isAnimating, onMove, disabled,
+  ref, stageNumber, game, visualPosition, isAnimating, onMove, disabled, lighting,
 }: StageBoardProps) {
   const { t } = useTranslation();
   const inputHandlers = usePlayerControls(onMove, !disabled);
@@ -58,6 +60,7 @@ export default function StageBoard({
           })}
         </div>
       ))}
+      <BoardLighting map={game.map} options={lighting} />
       <span
         className="stage-player"
         aria-hidden="true"
