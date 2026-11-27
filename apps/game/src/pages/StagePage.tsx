@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import type { StageDefinition, WorldDefinition } from '@state-maze/stages';
 import { useAnimatedGame } from '../hooks/useAnimatedGame';
+import type { LightingOptions } from '../components/BoardLighting';
 import StageBoard from '../components/StageBoard';
 import { getWorldStages, listStages, loadStage } from '../stages/loadStage';
 import { loadWorld } from '../worlds/loadWorld';
@@ -21,9 +22,32 @@ export default function StagePage() {
   return <StageContent key={stageId} stageId={stageId} />;
 }
 
+const lightingKey = 'state-maze.lighting';
+
+function loadLighting(): LightingOptions {
+  let saved;
+  try {
+    saved = JSON.parse(localStorage.getItem(lightingKey) ?? '{}');
+  } catch {
+    // Storage can be unavailable in a restricted webview.
+  }
+  return { penumbra: saved?.penumbra !== false, bloom: saved?.bloom !== false };
+}
+
 function StageContent({ stageId }: { stageId: string }) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const [lighting, setLighting] = useState(loadLighting);
+  function changeLighting(option: keyof LightingOptions, enabled: boolean) {
+    const updated = { ...lighting, [option]: enabled };
+    setLighting(updated);
+    try {
+      localStorage.setItem(lightingKey, JSON.stringify(updated));
+    } catch {
+      // The choice still applies to the current stage.
+    }
+  }
+
   const [paused, setPaused] = useState(false);
   const [state, setState] = useState<StageLoadState>({ status: 'loading' });
   const boardRef = useRef<HTMLDivElement>(null);
@@ -148,6 +172,7 @@ function StageContent({ stageId }: { stageId: string }) {
             visualPosition={visualPosition}
             isAnimating={isAnimating}
             onMove={move}
+            lighting={lighting}
             disabled={paused || completed}
           />
           {completed ? (
@@ -188,6 +213,16 @@ function StageContent({ stageId }: { stageId: string }) {
           {t('stage.resume')}
         </button>
         <button type="button" className="game-control" onClick={restart}>{t('stage.restart')}</button>
+        <fieldset className="lighting-options">
+          <legend>{t('stage.lighting')}</legend>
+          {(['penumbra', 'bloom'] as const).map(option => (
+            <label key={option}>
+              <input type="checkbox" checked={lighting[option]}
+                onChange={event => changeLighting(option, event.target.checked)} />
+              {t(`stage.${option}`)}
+            </label>
+          ))}
+        </fieldset>
         {catalogLink}
       </dialog>
     </main>

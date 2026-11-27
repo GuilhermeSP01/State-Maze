@@ -265,3 +265,20 @@ select {
     border-radius: 12px 12px 0 0;
   }
 }
+
+.lighting-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 4px 0;
+  border: 1px solid var(--control-border);
+  border-radius: 6px;
+}
+
+.lighting-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  cursor: pointer;
+}
