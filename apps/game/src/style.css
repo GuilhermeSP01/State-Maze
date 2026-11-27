@@ -282,3 +282,8 @@ select {
   min-height: 36px;
   cursor: pointer;
 }
+
+.home-page { max-inline-size: 24rem; }
+.mode-list { display: grid; gap: 12px; }
+.home-settings { display: flex; margin-block-start: 24px; }
+.settings-panel label { justify-content: space-between; }

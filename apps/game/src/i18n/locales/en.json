@@ -1,6 +1,10 @@
 {
-  "language": { "label": "Language" },
-  "navigation": { "backToStages": "Back to stages" },
+  "language": {
+    "label": "Language"
+  },
+  "navigation": {
+    "backToStages": "Back to stages"
+  },
   "world": {
     "loading": "Loading worlds…",
     "loadError": "Could not load the worlds."
@@ -34,5 +38,15 @@
     "floorOn_player": "Floor in state 1, player",
     "wall": "Wall",
     "wall_player": "Wall, player"
+  },
+  "menu": {
+    "back": "Back to modes",
+    "settings": "Settings",
+    "choose": "Choose your game mode.",
+    "campaign": "Campaign",
+    "flow": "Flow",
+    "challenge": "Challenge",
+    "upcomingDescription": "This mode will be available in a future update.",
+    "playCampaign": "Play Campaign"
   }
 }

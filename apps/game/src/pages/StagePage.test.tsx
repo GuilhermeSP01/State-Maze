@@ -51,6 +51,7 @@ afterEach(async () => {
 
 describe('stage navigation', () => {
   it('advances on demand, disables the action on the last stage and restores catalog focus', async () => {
+    await click('.mode-campaign');
     await click('.catalog-stage');
     expect(element('#stage-goal').textContent).toBe('Deixe todas as casas amarelas.');
     expect(document.activeElement).toBe(element('.stage-board'));
@@ -75,6 +76,7 @@ describe('stage navigation', () => {
   });
 
   it('blocks board commands during pause and returns focus after closing or restarting', async () => {
+    await click('.mode-campaign');
     await click('.catalog-stage');
     await click('.pause-button');
     const dialog = element<HTMLDialogElement>('dialog');
@@ -105,6 +107,7 @@ describe('stage navigation', () => {
 });
 
 it('moves as soon as a swipe is recognized and consumes it once', async () => {
+  await click('.mode-campaign');
   await click('.catalog-stage:nth-of-type(2)');
   const board = element('.stage-board');
   const player = () => element('[aria-label$=", jogador"]');
@@ -142,4 +145,17 @@ it('moves as soon as a swipe is recognized and consumes it once', async () => {
   await swipe('pointerdown', 0, 0);
   await swipe('pointerup', 24, 0);
   expect(player()).toBe(element('.stage-board-row:nth-child(4) .stage-tile:nth-child(4)'));
+});
+
+it('shows modes before stages and opens settings and upcoming modes', async () => {
+  expect(container.querySelector('.catalog-stage')).toBeNull();
+  expect(container.querySelectorAll('.mode-card')).toHaveLength(3);
+  await click('a[href="/settings"]');
+  expect(element<HTMLSelectElement>('select').value).toBe('pt-BR');
+  await click('a[href="/"]');
+  for (const mode of ['flow', 'challenge']) {
+    await click(`a[href="/${mode}"]`);
+    expect(container.textContent).toContain('Este modo estará disponível');
+    await click('a[href="/"]');
+  }
 });

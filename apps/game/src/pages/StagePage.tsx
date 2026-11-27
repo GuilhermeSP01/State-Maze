@@ -123,7 +123,7 @@ function StageContent({ stageId }: { stageId: string }) {
     if (state.status === 'ready' && state.nextStageId) navigate(`/stage/${state.nextStageId}`);
   }
 
-  const catalogLink = <Link className="game-control" to="/" state={{ returnStageId: stageId }}>
+  const catalogLink = <Link className="game-control" to="/campaign" state={{ returnStageId: stageId }}>
     {t('navigation.backToStages')}
   </Link>;
 

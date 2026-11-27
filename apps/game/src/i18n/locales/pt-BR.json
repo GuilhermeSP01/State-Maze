@@ -1,6 +1,10 @@
 {
-  "language": { "label": "Idioma" },
-  "navigation": { "backToStages": "Voltar às fases" },
+  "language": {
+    "label": "Idioma"
+  },
+  "navigation": {
+    "backToStages": "Voltar às fases"
+  },
   "world": {
     "loading": "Carregando mundos…",
     "loadError": "Não foi possível carregar os mundos."
@@ -34,5 +38,15 @@
     "floorOn_player": "Piso em estado 1, jogador",
     "wall": "Parede",
     "wall_player": "Parede, jogador"
+  },
+  "menu": {
+    "back": "Voltar aos modos",
+    "settings": "Configurações",
+    "choose": "Escolha seu modo de jogo.",
+    "campaign": "Campanha",
+    "flow": "Fluxo",
+    "challenge": "Desafio",
+    "upcomingDescription": "Este modo estará disponível em uma próxima atualização.",
+    "playCampaign": "Jogar Campanha"
   }
 }
