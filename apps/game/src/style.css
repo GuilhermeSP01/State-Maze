@@ -174,35 +174,9 @@ select {
   border-radius: 2px;
 }
 
-.stage-goal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin: 24px 0 10px;
-  text-align: center;
-}
-
-.stage-goal-swatch {
-  flex: 0 0 10px;
-  block-size: 10px;
-  border-radius: 2px;
-  background: var(--tile-on);
-}
-
-.stage-controls,
 .stage-completion {
   margin-block-start: 16px;
   text-align: center;
-}
-
-.stage-controls {
-  color: var(--muted-text);
-  font-size: 0.875rem;
-}
-
-.stage-controls p {
-  margin: 4px 0;
 }
 
 .stage-completion h2,

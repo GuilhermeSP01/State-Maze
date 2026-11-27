@@ -161,10 +161,6 @@ function StageContent({ stageId }: { stageId: string }) {
       </header>
       {game && visualPosition && (
         <>
-          <p id="stage-goal" className="stage-goal">
-            <span className="stage-goal-swatch" aria-hidden="true" />
-            {t('stage.goal')}
-          </p>
           <StageBoard
             ref={boardRef}
             stageNumber={state.stage.number}
@@ -176,7 +172,7 @@ function StageContent({ stageId }: { stageId: string }) {
             lighting={lighting}
             disabled={paused || completed}
           />
-          {completed ? (
+          {completed && (
             <section className="stage-completion" aria-labelledby="completion-title">
               <h2 id="completion-title" ref={completionRef} tabIndex={-1}>{t('stage.completed')}</h2>
               <div className="completion-actions">
@@ -192,11 +188,6 @@ function StageContent({ stageId }: { stageId: string }) {
                 <button type="button" className="game-control" onClick={restart}>{t('stage.replay')}</button>
               </div>
             </section>
-          ) : (
-            <div id="stage-controls" className="stage-controls">
-              <p>{t('stage.controls')}</p>
-              {state.stage.number === 1 && <p>{t('stage.toggleHint')}</p>}
-            </div>
           )}
         </>
       )}

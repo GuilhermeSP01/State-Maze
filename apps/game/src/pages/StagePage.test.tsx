@@ -53,7 +53,9 @@ describe('stage navigation', () => {
   it('advances on demand, disables the action on the last stage and restores catalog focus', async () => {
     await click('.mode-campaign');
     await click('.catalog-stage');
-    expect(element('#stage-goal').textContent).toBe('Deixe todas as casas amarelas.');
+    expect(container.textContent).not.toContain('Deixe todas as casas amarelas.');
+    expect(container.textContent).not.toContain('Use as setas ou deslize no tabuleiro.');
+    expect(container.textContent).not.toContain('Cada casa em que a peça entra alterna entre 0 e 1.');
     expect(document.activeElement).toBe(element('.stage-board'));
 
     await play('ArrowRight');
