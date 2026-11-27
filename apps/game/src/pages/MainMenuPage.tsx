@@ -1,13 +1,13 @@
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import LanguageSelector from '../components/LanguageSelector';
+import SettingsPanel from '../components/SettingsPanel';
 
 export function SettingsPage() {
   const { t } = useTranslation();
   return <main className="catalog-page catalog-header">
     <Link className="game-control" to="/">{t('menu.back')}</Link>
     <h1>{t('menu.settings')}</h1>
-    <section className="settings-panel"><LanguageSelector /></section>
+    <SettingsPanel />
   </main>;
 }
 

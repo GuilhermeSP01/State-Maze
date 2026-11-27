@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Link, Navigate, useNavigate, useParams } from 'react-router';
 import type { StageDefinition, WorldDefinition } from '@state-maze/stages';
 import { useAnimatedGame } from '../hooks/useAnimatedGame';
-import type { LightingOptions } from '../components/BoardLighting';
+import SettingsPanel from '../components/SettingsPanel';
+import { useLighting } from '../components/LightingPreferences';
 import StageBoard from '../components/StageBoard';
 import { getWorldStages, listStages, loadStage } from '../stages/loadStage';
 import { loadWorld } from '../worlds/loadWorld';
@@ -22,32 +23,11 @@ export default function StagePage() {
   return <StageContent key={stageId} stageId={stageId} />;
 }
 
-const lightingKey = 'state-maze.lighting';
-
-function loadLighting(): LightingOptions {
-  let saved;
-  try {
-    saved = JSON.parse(localStorage.getItem(lightingKey) ?? '{}');
-  } catch {
-    // Storage can be unavailable in a restricted webview.
-  }
-  return { penumbra: saved?.penumbra !== false, bloom: saved?.bloom !== false };
-}
-
 function StageContent({ stageId }: { stageId: string }) {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const [lighting, setLighting] = useState(loadLighting);
-  function changeLighting(option: keyof LightingOptions, enabled: boolean) {
-    const updated = { ...lighting, [option]: enabled };
-    setLighting(updated);
-    try {
-      localStorage.setItem(lightingKey, JSON.stringify(updated));
-    } catch {
-      // The choice still applies to the current stage.
-    }
-  }
-
+  const { lighting } = useLighting();
+  const [showSettings, setShowSettings] = useState(false);
   const [paused, setPaused] = useState(false);
   const [state, setState] = useState<StageLoadState>({ status: 'loading' });
   const boardRef = useRef<HTMLDivElement>(null);
@@ -197,25 +177,25 @@ function StageContent({ stageId }: { stageId: string }) {
         aria-labelledby="pause-title"
         onCancel={(event) => {
           event.preventDefault();
-          resume();
+          if (showSettings) setShowSettings(false);
+          else resume();
         }}
       >
-        <h2 id="pause-title">{t('stage.paused')}</h2>
-        <button ref={resumeButtonRef} type="button" className="game-control game-control-primary" onClick={resume}>
-          {t('stage.resume')}
+        <h2 id="pause-title">{t(showSettings ? 'menu.settings' : 'stage.paused')}</h2>
+        {showSettings ? (
+          <SettingsPanel />
+        ) : (
+          <>
+            <button ref={resumeButtonRef} type="button" className="game-control game-control-primary" onClick={resume}>
+              {t('stage.resume')}
+            </button>
+            <button type="button" className="game-control" onClick={restart}>{t('stage.restart')}</button>
+          </>
+        )}
+        <button type="button" className="game-control" onClick={() => setShowSettings(!showSettings)}>
+          {t(showSettings ? 'menu.backToPause' : 'menu.settings')}
         </button>
-        <button type="button" className="game-control" onClick={restart}>{t('stage.restart')}</button>
-        <fieldset className="lighting-options">
-          <legend>{t('stage.lighting')}</legend>
-          {(['penumbra', 'bloom'] as const).map(option => (
-            <label key={option}>
-              <input type="checkbox" checked={lighting[option]}
-                onChange={event => changeLighting(option, event.target.checked)} />
-              {t(`stage.${option}`)}
-            </label>
-          ))}
-        </fieldset>
-        {catalogLink}
+        {!showSettings && catalogLink}
       </dialog>
     </main>
   );

@@ -161,3 +161,39 @@ it('shows modes before stages and opens settings and upcoming modes', async () =
     await click('a[href="/"]');
   }
 });
+
+it('shares lighting preferences between the main menu and a paused game', async () => {
+  const checkbox = 'input[type="checkbox"]';
+  await click('a[href="/settings"]');
+  const previous = element<HTMLInputElement>(checkbox).checked;
+  await click(checkbox);
+  await click('a[href="/"]');
+  await click('.mode-campaign');
+  await click('.catalog-stage:nth-of-type(2)');
+  await play('ArrowRight');
+  const board = element('.stage-board');
+  const player = board.querySelector('[aria-label$=", jogador"]');
+  expect(player).not.toBeNull();
+
+  await click('.pause-button');
+  expect(container.querySelector(checkbox)).toBeNull();
+  const settingsButton = Array.from(container.querySelectorAll<HTMLButtonElement>('dialog button'))
+    .find(button => button.textContent === 'Configurações')!;
+  await act(() => settingsButton.click());
+  expect(element<HTMLSelectElement>('dialog select').value).toBe('pt-BR');
+  expect(element<HTMLInputElement>(checkbox).checked).toBe(!previous);
+  await click(checkbox);
+  const dialog = element<HTMLDialogElement>('dialog');
+  await act(() => dialog.dispatchEvent(new Event('cancel', { cancelable: true })));
+  expect(dialog.open).toBe(true);
+  expect(container.querySelector(checkbox)).toBeNull();
+  await click('dialog .game-control-primary');
+  expect(dialog.open).toBe(false);
+  expect(board.querySelector('[aria-label$=", jogador"]')).toBe(player);
+
+  await click('.pause-button');
+  await click('dialog a');
+  await click('a[href="/"]');
+  await click('a[href="/settings"]');
+  expect(element<HTMLInputElement>(checkbox).checked).toBe(previous);
+});

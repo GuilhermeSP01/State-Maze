@@ -81,16 +81,16 @@ select {
   max-inline-size: 42rem;
 }
 
-.catalog-header label {
+.settings-panel > label {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 8px;
   color: var(--muted-text);
 }
 
-.catalog-header select {
+.settings-panel select {
   min-block-size: 44px;
   max-inline-size: 100%;
   padding-inline: 8px;
@@ -260,4 +260,4 @@ select {
 .home-page { max-inline-size: 24rem; }
 .mode-list { display: grid; gap: 12px; }
 .home-settings { display: flex; margin-block-start: 24px; }
-.settings-panel label { justify-content: space-between; }
+.settings-panel { display: grid; gap: 12px; }

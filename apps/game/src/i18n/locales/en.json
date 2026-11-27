@@ -38,6 +38,7 @@
   },
   "menu": {
     "back": "Back to modes",
+    "backToPause": "Back to pause menu",
     "settings": "Settings",
     "choose": "Choose your game mode.",
     "campaign": "Campaign",
