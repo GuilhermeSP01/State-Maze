@@ -1,0 +1,161 @@
+<style>
+#sm-redesigns {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+#sm-redesigns * {box-sizing:border-box}
+#sm-redesigns h2,#sm-redesigns p {margin:0}
+#sm-redesigns .concept-title {font:600 14px system-ui;margin:0 0 9px}
+#sm-redesigns .mock {--ink:#f9f3e8;--quiet:#cbc4b6;--surface:#252725;--line:#3d403b;--hot:#f5ce6d;--hot-ink:#211d12;--wall:#323532;--floor:#949a91;background:#181b18;color:var(--ink);border-radius:16px;overflow:hidden;min-height:428px;padding:14px;font:13px/1.35 system-ui}
+#sm-redesigns .mock button,#sm-redesigns .mock select {font:inherit;color:inherit}
+#sm-redesigns .mock button {cursor:pointer}
+#sm-redesigns .bar {display:flex;align-items:center;justify-content:space-between;gap:6px}
+#sm-redesigns .wordmark {font-weight:760;font-size:13px;letter-spacing:-.03em}
+#sm-redesigns select {background:var(--surface);border:1px solid var(--line);padding:5px;color-scheme:dark;border-radius:7px}
+#sm-redesigns .map {display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:2px;width:100%;margin-inline:auto}
+#sm-redesigns .tile {aspect-ratio:1;background:var(--wall);border-radius:3px;display:grid;place-items:center}
+#sm-redesigns .tile[data-value="0"] {background:var(--floor)}
+#sm-redesigns .tile[data-value="1"] {background:var(--hot)}
+#sm-redesigns .tile.player::after {content:"";display:block;width:54%;aspect-ratio:1;border-radius:50%;background:#263344;border:1px solid #f9f3e8}
+#sm-redesigns .hero-art {padding:20px 10px 14px}
+#sm-redesigns .hero-art .map {max-width:166px;transform:rotate(-8deg);filter:drop-shadow(0 10px 8px #0005)}
+#sm-redesigns .hero-title {font:800 clamp(28px,4.9vw,42px)/.91 system-ui;letter-spacing:-.075em;text-align:center;margin:7px 0 9px}
+#sm-redesigns .tagline {text-align:center;color:var(--quiet);font-size:12px}
+#sm-redesigns .primary {display:block;width:100%;border:0;border-radius:9px;padding:10px 6px;background:var(--hot);color:var(--hot-ink)!important;font-weight:800!important;text-align:center}
+#sm-redesigns .hero .primary {margin-top:17px}
+#sm-redesigns .minor {color:var(--quiet);font-size:11px}
+#sm-redesigns .world {margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:5px}
+#sm-redesigns .world h3 {font-size:13px;margin:0}
+#sm-redesigns .number-row {display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}
+#sm-redesigns .number-row button {min-height:40px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+#sm-redesigns .atlas {--ink:#172e28;--quiet:#405b51;--surface:#e9efe4;--line:#c5d1c4;--wall:#b8cabb;--floor:#f7f5e8;--hot:#ffd379;--hot-ink:#182d26;background:#f7f5ea}
+#sm-redesigns .atlas select {color-scheme:light}
+#sm-redesigns .screen-title {font:650 31px/.98 system-ui;letter-spacing:-.055em;margin:23px 0 5px}
+#sm-redesigns .atlas .screen-title {font:500 34px/.98 Georgia,serif}
+#sm-redesigns .atlas .map {max-width:125px}
+#sm-redesigns .atlas .number-row button[aria-pressed="true"] {background:#27463c;color:#fff;border-color:#27463c}
+#sm-redesigns .atlas-preview {min-height:144px;background:var(--surface);border-radius:10px;margin:10px 0 8px;padding:10px;display:grid;align-content:center;gap:7px}
+#sm-redesigns .atlas-preview h3 {font-size:12px;margin:0}
+#sm-redesigns .catalog {--ink:#e9f2ff;--surface:#18253c;--quiet:#adbfdb;--line:#30425f;--hot:#99c0ff;--wall:#324364;--floor:#c3d5ee;background:#101a2e}
+#sm-redesigns .catalog .wordmark {font-family:ui-monospace,monospace}
+#sm-redesigns .catalog-list {list-style:none;margin:16px 0 0;padding:0;display:grid;gap:7px}
+#sm-redesigns .catalog-list button {width:100%;min-height:68px;display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px;font-weight:650}
+#sm-redesigns .catalog-list .map {gap:1px}
+#sm-redesigns .catalog-list .tile {border-radius:1px}
+#sm-redesigns button:hover {filter:brightness(1.12)}
+#sm-redesigns dialog {width:min(260px,calc(100% - 28px));border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);padding:15px}
+#sm-redesigns dialog::backdrop {background:#10141caa}
+#sm-redesigns dialog h3 {margin:0}
+#sm-redesigns dialog .map {margin:14px auto;max-width:170px}
+#sm-redesigns dialog button {background:var(--surface);border:1px solid var(--line);border-radius:7px;min-height:38px;padding:4px 10px}
+@media(max-width:620px) {
+  #sm-redesigns {grid-template-columns:1fr}
+  #sm-redesigns article {width:100%;max-width:420px;justify-self:center}
+  #sm-redesigns .mock {padding:16px;min-height:auto}
+  #sm-redesigns .hero-title {font-size:44px}
+  #sm-redesigns button,#sm-redesigns select {min-height:44px}
+}
+</style>
+<div id="sm-redesigns" lang="pt-BR" aria-label="Três propostas para a tela inicial de State Maze">
+  <article>
+    <h2 class="concept-title">Entrada direta</h2>
+    <div class="mock hero">
+      <header class="bar"><span class="wordmark">◈</span><select aria-label="Idioma"><option value="pt">PT-BR</option><option value="en">EN</option></select></header>
+      <div class="hero-art"><div class="map" data-map="3" aria-hidden="true"></div></div>
+      <div class="hero-title">State<br>Maze</div>
+      <p class="tagline" data-copy="tagline">Deslize e altere o piso.</p>
+      <button class="primary" data-stage="1" data-copy="start">Começar tutorial →</button>
+      <div class="world"><h3>Tutorial</h3><span class="minor" data-copy="three">3 fases</span></div>
+      <div class="number-row"><button data-stage="1">1</button><button data-stage="2">2</button><button data-stage="3">3</button></div>
+    </div>
+  </article>
+  <article>
+    <h2 class="concept-title">Atlas de mundos</h2>
+    <div class="mock atlas">
+      <header class="bar"><span class="wordmark">State Maze</span><select aria-label="Idioma"><option value="pt">PT-BR</option><option value="en">EN</option></select></header>
+      <div class="screen-title" data-copy="worlds">Mundos</div>
+      <div class="world"><h3>Tutorial</h3><span class="minor" data-copy="three">3 fases</span></div>
+      <div class="number-row" aria-label="Fases"><button data-pick="1" aria-pressed="true">1</button><button data-pick="2" aria-pressed="false">2</button><button data-pick="3" aria-pressed="false">3</button></div>
+      <div class="atlas-preview" aria-live="polite"><h3 class="selected-stage">Fase 1</h3><div class="map" data-map="1" aria-hidden="true"></div></div>
+      <button class="primary" data-stage="1" data-copy="play">Jogar fase 1 →</button>
+    </div>
+  </article>
+  <article>
+    <h2 class="concept-title">Galeria de fases</h2>
+    <div class="mock catalog">
+      <header class="bar"><span class="wordmark">STATE MAZE</span><select aria-label="Idioma"><option value="pt">PT-BR</option><option value="en">EN</option></select></header>
+      <div class="screen-title" data-copy="stages">Fases</div>
+      <div class="world"><h3>Tutorial</h3><span class="minor" data-copy="three">3 fases</span></div>
+      <ul class="catalog-list">
+        <li><button data-stage="1"><span class="map" data-map="1" aria-hidden="true"></span><span data-stage-label="1">Fase 1</span><span aria-hidden="true">→</span></button></li>
+        <li><button data-stage="2"><span class="map" data-map="2" aria-hidden="true"></span><span data-stage-label="2">Fase 2</span><span aria-hidden="true">→</span></button></li>
+        <li><button data-stage="3"><span class="map" data-map="3" aria-hidden="true"></span><span data-stage-label="3">Fase 3</span><span aria-hidden="true">→</span></button></li>
+      </ul>
+    </div>
+  </article>
+  <template><dialog><form method="dialog"><div class="bar"><h3></h3><button data-copy="close">Fechar</button></div><div class="map" aria-hidden="true"></div><p class="minor" data-copy="preview">Prévia do tabuleiro inicial</p></form></dialog></template>
+</div>
+<script>
+(() => {
+  const root = document.getElementById('sm-redesigns');
+  const maps = {
+    1: ['22222','21002','22222'],
+    2: ['22222','20002','20202','20002','22222'],
+    3: ['2222222','2111102','2022212','2000012','2222222'],
+  };
+  const copy = {
+    pt: {tagline:'Deslize e altere o piso.', start:'Começar tutorial →', three:'3 fases', worlds:'Mundos', stages:'Fases', play:'Jogar fase', stage:'Fase', close:'Fechar', preview:'Prévia do tabuleiro inicial', language:'Idioma'},
+    en: {tagline:'Slide and toggle the tiles.', start:'Start tutorial →', three:'3 stages', worlds:'Worlds', stages:'Stages', play:'Play stage', stage:'Stage', close:'Close', preview:'Starting board preview', language:'Language'},
+  };
+  function draw(board, stage) {
+    const rows = maps[stage];
+    board.style.setProperty('--cols', rows[0].length);
+    board.replaceChildren();
+    rows.forEach((row, y) => Array.from(row).forEach((value, x) => {
+      const tile = document.createElement('span');
+      tile.className = x === 1 && y === 1 ? 'tile player' : 'tile';
+      tile.dataset.value = value;
+      board.append(tile);
+    }));
+  }
+  root.querySelectorAll('[data-map]').forEach(board => draw(board, board.dataset.map));
+  root.querySelectorAll('.mock').forEach(mock => {
+    const select = mock.querySelector('select');
+    const dialog = root.querySelector('template').content.firstElementChild.cloneNode(true);
+    dialog.setAttribute('aria-label', copy.pt.preview);
+    mock.append(dialog);
+    const primary = mock.querySelector('[data-copy="play"]');
+    const picks = mock.querySelectorAll('[data-pick]');
+    const selectedStage = mock.querySelector('.selected-stage');
+    function updateCopy() {
+      const labels = copy[select.value];
+      mock.lang = select.value === 'pt' ? 'pt-BR' : 'en';
+      select.setAttribute('aria-label', labels.language);
+      dialog.setAttribute('aria-label', labels.preview);
+      mock.querySelectorAll('[data-copy]').forEach(el => {
+        const key = el.dataset.copy;
+        el.textContent = key === 'play' ? labels.play + ' ' + primary.dataset.stage + ' →' : labels[key];
+      });
+      mock.querySelectorAll('[data-stage-label]').forEach(el => {
+        el.textContent = labels.stage + ' ' + el.dataset.stageLabel;
+      });
+      mock.querySelectorAll('.number-row button').forEach(el => {
+        el.setAttribute('aria-label', labels.stage + ' ' + (el.dataset.stage || el.dataset.pick));
+      });
+      if (selectedStage) selectedStage.textContent = labels.stage + ' ' + primary.dataset.stage;
+    }
+    select.addEventListener('change', updateCopy);
+    picks.forEach(button => button.addEventListener('click', () => {
+      const stage = button.dataset.pick;
+      picks.forEach(pick => pick.setAttribute('aria-pressed', String(pick === button)));
+      primary.dataset.stage = stage;
+      draw(mock.querySelector('.atlas-preview .map'), stage);
+      updateCopy();
+    }));
+    mock.querySelectorAll('button[data-stage]').forEach(button => button.addEventListener('click', () => {
+      const stage = button.dataset.stage;
+      dialog.querySelector('h3').textContent = copy[select.value].stage + ' ' + stage;
+      draw(dialog.querySelector('.map'), stage);
+      dialog.showModal();
+    }));
+    updateCopy();
+  });
+})();
+</script>
